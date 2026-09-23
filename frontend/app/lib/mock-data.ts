@@ -1,1 +1,0 @@
-//i will add data for mockdata the charts here while awaiting for the backend to be ready
