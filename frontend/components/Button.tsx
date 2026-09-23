@@ -31,8 +31,12 @@ export default function Button({
   const classes = [base, variants[variant], fullWidth ? "w-full" : "", className]
     .filter(Boolean)
     .join(" ");
-  // type="button" by default. Without it a button inside a <form> defaults to
-  // type="submit" and reloads the page — a classic beginner bug.
+  /*
+    type="button" by default. Without it a button inside a <form> defaults to
+  type="submit" and reloads the page — a classic beginner bug.
+
+ */
+
   return (
     <button type="button" className={classes} {...rest}>
       {children}
