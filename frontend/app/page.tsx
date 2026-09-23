@@ -1,65 +1,137 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import AuthLayout from "@/components/AuthLayout";
+import TextField from "@/components/TextField";
+import Button from "@/components/Button";
+import Icon from "@/components/Icon";
+
+
+export default function LoginPage() {
+  // --- State -------------------------------------------------------------
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [remember, setRemember] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  const router = useRouter();
+
+  // --- Actions -------------------------------------------------------------
+  function handleSignIn() {
+    // Validate before doing anything. Never let an empty form through.
+    if (!email.trim() || !password.trim()) {
+      setError("Enter your work email and password.");
+      return;
+    }
+    setError("");
+    // A real app would call the server here. For now, go to the dashboard.
+    router.push("/dashboard");
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <AuthLayout
+      decorated
+      icon="medical_services"
+      title="Welcome to MediStock IMS"
+      subtitle="Secure Inventory Management for Health Professionals"
+      footer={
+        <div className="mt-6 flex flex-col items-center gap-[7px] text-2xs text-muted">
+          <span>&copy; 2026 MediStock IMS v2.4.1</span>
+          <div className="flex items-center gap-3">
+            <Link href="/legal/privacy" className="text-muted hover:underline">
+              Privacy Policy
+            </Link>
+            <span className="h-1 w-1 rounded-full bg-[#98A4B4]" aria-hidden="true" />
+            <Link href="/legal/terms" className="text-muted hover:underline">
+              Terms of Service
+            </Link>
+            <span className="h-1 w-1 rounded-full bg-[#98A4B4]" aria-hidden="true" />
+            <Link href="/legal/support" className="text-muted hover:underline">
+              Technical Support
+            </Link>
+          </div>
+        </div>
+      }
+    >
+      <TextField
+        label="WORK EMAIL"
+        icon="mail"
+        type="email"
+        autoComplete="email"
+        placeholder="name@hospital.org"
+        value={email}
+        onChange={setEmail}
+        required
+      />
+
+      <TextField
+        label="PASSWORD"
+        icon="lock"
+        // Swapping the type between "password" and "text" is the whole
+        // show/hide feature. The value never changes, only how it renders.
+        type={showPassword ? "text" : "password"}
+        autoComplete="current-password"
+        placeholder="••••••••"
+        value={password}
+        onChange={setPassword}
+        required
+        labelAction={
+          <Link href="/forgot-password" className="text-2xs font-bold text-brand hover:underline">
+            Forgot Password?
+          </Link>
+        }
+        trailing={
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="flex cursor-pointer border-none bg-transparent p-1 text-muted hover:text-brand"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+          >
+            <Icon name={showPassword ? "visibility_off" : "visibility"} />
+          </button>
+        }
+      />
+
+      <label className="flex cursor-pointer items-center gap-3 text-[12.5px] font-semibold text-[#344054]">
+        <input
+          type="checkbox"
+          checked={remember}
+          onChange={(event) => setRemember(event.target.checked)}
+          className="h-4 w-4 accent-brand"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        Remember this device for 30 days
+      </label>
+
+      {error && (
+        <span role="alert" className="text-sm font-semibold text-danger">
+          {error}
+        </span>
+      )}
+
+      <Button onClick={handleSignIn} fullWidth>
+        Sign In <Icon name="arrow_forward" />
+      </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-border-soft" />
+        <span className="text-[10.5px] font-bold tracking-[.1em] text-muted">
+          EXTERNAL AUTHENTICATION
+        </span>
+        <div className="h-px flex-1 bg-border-soft" />
+      </div>
+
+      <div className="flex gap-3">
+        <Button variant="secondary" className="flex-1" onClick={() => router.push("/hospital-portal")}>
+          <Icon name="badge" size={18} className="text-brand" /> Hospital Portal
+        </Button>
+        <Button variant="secondary" className="flex-1" onClick={() => router.push("/sso")}>
+          <Icon name="verified_user" size={18} className="text-brand" /> Single Sign-On
+        </Button>
+      </div>
+    </AuthLayout>
   );
 }
