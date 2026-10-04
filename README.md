@@ -1,7 +1,7 @@
 MediStock IMS
 =============
 Hospital pharmacy Inventory Management System.
-CMPG224 (NWU Software Engineering) group project - Eclipse Softworks.
+CMPG224 (NWU Software Engineering) group project
 Repo: https://github.com/CMPG224/MediStock-IMS-
 
 WHAT IS IN THIS REPO
