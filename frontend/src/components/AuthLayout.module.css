@@ -1,0 +1,70 @@
+.page {
+position: relative;
+min-height: 100vh;
+display: flex;
+align-items:center;
+justify-content: center;
+padding: 64px var(--space-6);
+overflow: hidden;
+background: var(--c-page);
+}
+/* Two soft out-of-focus colour blobs behind the card. Purely decorative. */
+.blob {
+position: absolute;
+width: 620px;
+height: 560px;
+border-radius: 50%;
+filter: blur(120px);
+pointer-events: none;
+}
+.blobTop { top:-160px;right:-120px; background: #9FB6D4; opacity: .55; }
+.blobBottom { bottom:-220px; left:-160px; background: #A9CBB4; opacity: .45; }
+.content {
+position: relative;
+width: 100%;
+max-width: 392px;
+display: flex;
+flex-direction: column;
+align-items:center;
+}
+.badge {
+width: 64px;
+height: 64px;
+display: flex;
+align-items:center;
+justify-content: center;
+border-radius: var(--radius-lg);
+background: var(--c-brand);
+box-shadow: 0 10px 24pxrgba(11, 76, 140, .28);
+}
+.badgeSuccess{ background: var(--c-success); }
+.title {
+margin: 22px 0 6px;
+font-size: var(--text-2xl);
+letter-spacing:-.02em;
+color: var(--c-ink);
+text-align: center;
+}
+.titleSmall { font-size: var(--text-xl); }
+.subtitle {
+margin: 0 0 30px;
+font-size: 14px;
+color: var(--c-muted);
+text-align: center;
+}
+.card {
+width: 100%;
+display: flex;
+flex-direction: column;
+gap: var(--space-5);
+padding: 26px var(--space-6) 28px;
+border: 1px solid var(--c-border-soft);
+border-radius: var(--radius-md);
+background: var(--c-surface);
+box-shadow: var(--shadow-card);
+}
+.back { margin-top:var(--space-5); }
+@media (max-width: 480px) {
+.page { padding: var(--space-8) var(--space-4); }
+.title { font-size:22px; }
+}
