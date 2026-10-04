@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate} from"react-router-dom";
+import { useRouter } from "next/navigation";
 import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
@@ -9,7 +11,7 @@ export default function HospitalPortalPage() {
     const [facilityCode, setFacilityCode] = useState("");
     const [staffId,setStaffId] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const router = useRouter();
 
     function handleContinue() {
         if (!facilityCode.trim() || !staffId.trim()) {
@@ -18,7 +20,7 @@ export default function HospitalPortalPage() {
         }
 
         setError("");
-        navigate("/dashboard");
+        router.push("/dashboard");
     }
 
     return (

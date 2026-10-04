@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
@@ -18,9 +21,7 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-    // useNavigate gives usa function to move to another route in code, as
-    // opposed to \<Link> whichtheuser clicks.
-    const navigate = useNavigate();
+    const router = useRouter();
 
     //--- Actions--------------------------------------------------------------
     function handleSignIn() {
@@ -33,7 +34,7 @@ export default function LoginPage() {
         setError("");
 
         // A real app would call the server here. For now, go to the dashboard.
-        navigate("/dashboard");
+        router.push("/dashboard");
     }
 
     return (
@@ -45,13 +46,13 @@ export default function LoginPage() {
             footer={
                 <div className={styles.footer}>
                     <span>&copy;2026 MediStock IMS v2.4.1</span>
-                    \<div className={styles.footerLinks}>
-                        <Link to="/legal/privacy">Privacy Policy</Link>
-                        \<span className={styles.dot} aria-hidden="true" />
-                        <Link to="/legal/terms">Terms of Service</Link>
-                        \<span className={styles.dot} aria-hidden="true" />
-                        <Link to="/legal/support">Technical Support</Link>
-                    \</div>
+                    <div className={styles.footerLinks}>
+                        <Link href="/legal/privacy">Privacy Policy</Link>
+                        <span className={styles.dot} aria-hidden="true" />
+                        <Link href="/legal/terms">Terms of Service</Link>
+                        <span className={styles.dot} aria-hidden="true" />
+                        <Link href="/legal/support">Technical Support</Link>
+                    </div>
                 \</div>
             }
         >
@@ -77,7 +78,7 @@ export default function LoginPage() {
                 onChange={setPassword}
                 required
                 labelAction={
-                    <Link to="/forgot-password" className={styles.forgotLink}>
+                    <Link href="/forgot-password" className={styles.forgotLink}>
                         Forgot Password?
                     </Link>
                 }
@@ -132,14 +133,14 @@ export default function LoginPage() {
             <div className={styles.altRow}>
                 <Button
                     variant="secondary"
-                    onClick={() => navigate("/hospital-portal")}
+                    onClick={() => router.push("/hospital-portal")}
                 >
                     <Icon name="badge" size={18} color="var(--c-brand)" /> Hospital Portal
                 </Button>
 
                 <Button
                     variant="secondary"
-                    onClick={() => navigate("/sso")}
+                    onClick={() => router.push("/sso")}
                 >
                     <Icon name="verified_user" size={18} color="var(--c-brand)" /> Single Sign-On
                 </Button>

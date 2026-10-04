@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate} from"react-router-dom";
+import { useRouter } from "next/navigation";
 import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
@@ -10,7 +12,7 @@ import styles from "./LoginPage.module.css";
 export default function SsoPage() {
     const [domain, setDomain] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const router = useRouter();
 
     function handleContinue() {
         if (!domain.trim()) {
@@ -19,7 +21,7 @@ export default function SsoPage() {
         }
 
         setError("");
-        navigate("/dashboard");
+        router.push("/dashboard");
     }
 
     return (

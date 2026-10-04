@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
@@ -45,12 +47,15 @@ export default function ForgotPasswordPage() {
                         </button>
                     </>
                 }
-            />
+            >
+                <></>
+            </AuthLayout>
         );
     }
 
     return (
         <AuthLayout
+            icon="lock_reset"
             title="Forgot your password?"
             subtitle="Enter your work email and we'll send a reset link."
             footer={<BackToSignIn />}
@@ -59,8 +64,8 @@ export default function ForgotPasswordPage() {
                 label="Work email"
                 type="email"
                 value={email}
-                onChange={(e) => {
-                    setEmail(e.target.value);
+                onChange={(nextValue) => {
+                    setEmail(nextValue);
                     if (error) setError("");
                 }}
                 error={error}
