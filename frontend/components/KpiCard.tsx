@@ -1,4 +1,4 @@
-import Icon from "../Icon";
+import Icon from "./Icon";
 import type { KpiNoteTone } from "@/lib/mock-data";
 
 const NOTE_COLOR: Record<KpiNoteTone, string> = {
