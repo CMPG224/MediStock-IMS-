@@ -8,6 +8,7 @@ import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 import Icon from "../../components/Icon";
 import styles from "./LoginPage.module.css";
+import { supabase } from "../../lib/supabase";
 
 export default function LoginPage() {
     //--- State--------------------------------------------------------------
@@ -24,7 +25,7 @@ export default function LoginPage() {
     const router = useRouter();
 
     //--- Actions--------------------------------------------------------------
-    function handleSignIn() {
+        async function handleSignIn() {
         // Validate before doing anything. Never let an empty form through.
         if (!email.trim() || !password.trim()) {
             setError("Enter your work email and password.");
@@ -33,7 +34,16 @@ export default function LoginPage() {
 
         setError("");
 
-        // A real app would call the server here. For now, go to the dashboard.
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (signInError) {
+            setError("Incorrect email or password.");
+            return;
+        }
+
         router.push("/dashboard");
     }
 
