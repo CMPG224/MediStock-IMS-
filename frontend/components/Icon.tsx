@@ -1,167 +1,79 @@
-declare module "lucide-react" {
-  export type LucideIcon = any;
-  export const AlertTriangle: any;
-  export const ArrowLeftRight: any;
-  export const ArrowRight: any;
-  export const ArrowUpRight: any;
-  export const AtSign: any;
-  export const Ban: any;
-  export const BarChart3: any;
-  export const Barcode: any;
-  export const Bell: any;
-  export const Bot: any;
-  export const Building2: any;
-  export const Calendar: any;
-  export const CalendarX: any;
-  export const Check: any;
-  export const CheckCircle2: any;
-  export const ChevronDown: any;
-  export const ChevronLeft: any;
-  export const ChevronRight: any;
-  export const CircleAlert: any;
-  export const CircleMinus: any;
-  export const CirclePlus: any;
-  export const ClipboardClock: any;
-  export const ClipboardList: any;
-  export const Clock: any;
-  export const DollarSign: any;
-  export const EllipsisVertical: any;
-  export const Eye: any;
-  export const EyeOff: any;
-  export const ExternalLink: any;
-  export const FileText: any;
-  export const HelpCircle: any;
-  export const History: any;
-  export const IdCard: any;
-  export const Info: any;
-  export const KeyRound: any;
-  export const LayoutDashboard: any;
-  export const Lock: any;
-  export const LogOut: any;
-  export const Mail: any;
-  export const MailCheck: any;
-  export const MapPin: any;
-  export const Package: any;
-  export const Pencil: any;
-  export const Pill: any;
-  export const Plus: any;
-  export const Receipt: any;
-  export const ScanLine: any;
-  export const Search: any;
-  export const Settings: any;
-  export const Shield: any;
-  export const ShieldCheck: any;
-  export const ShoppingCart: any;
-  export const SlidersHorizontal: any;
-  export const Smartphone: any;
-  export const Star: any;
-  export const Stethoscope: any;
-  export const Thermometer: any;
-  export const Trash2: any;
-  export const TrendingDown: any;
-  export const TrendingUp: any;
-  export const Truck: any;
-  export const Upload: any;
-  export const User: any;
-  export const UserCog: any;
-  export const UserPlus: any;
-  export const UserX: any;
-  export const Users: any;
-  export const X: any;
-}
-
 import {
+  LayoutDashboard,
+  Pill,
+  Package,
   AlertTriangle,
-  ArrowLeftRight,
-  ArrowRight,
-  ArrowUpRight,
-  AtSign,
-  Ban,
-  BarChart3,
-  Barcode,
-  Bell,
-  Bot,
-  Building2,
-  Calendar,
   CalendarX,
-  Check,
+  Ban,
+  DollarSign,
+  History,
+  Truck,
   CheckCircle2,
+  ShieldCheck,
+  AtSign,
+  KeyRound,
+  Smartphone,
+  Upload,
+  Plus,
+  IdCard,
+  Building2,
+  Stethoscope,
+  Mail,
+  Lock,
+  ArrowRight,
+  MailCheck,
+  HelpCircle,
+  LogOut,
+  User,
+  Settings,
+  ArrowLeftRight,
+  ShoppingCart,
+  BarChart3,
+  Users,
+  Receipt,
+  Bell,
+  Search,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  CircleAlert,
-  CircleMinus,
-  CirclePlus,
-  ClipboardClock,
-  ClipboardList,
-  Clock,
-  DollarSign,
-  EllipsisVertical,
   Eye,
   EyeOff,
-  ExternalLink,
-  FileText,
-  HelpCircle,
-  History,
-  IdCard,
-  Info,
-  KeyRound,
-  LayoutDashboard,
-  Lock,
-  LogOut,
-  Mail,
-  MailCheck,
-  MapPin,
-  Package,
-  Pencil,
-  Pill,
-  Plus,
-  Receipt,
-  ScanLine,
-  Search,
-  Settings,
-  Shield,
-  ShieldCheck,
-  ShoppingCart,
   SlidersHorizontal,
-  Smartphone,
+  Download,
   Star,
-  Stethoscope,
-  Thermometer,
-  Trash2,
-  TrendingDown,
-  TrendingUp,
-  Truck,
-  Upload,
-  User,
-  UserCog,
-  UserPlus,
-  UserX,
-  Users,
   X,
+  Check,
+  CirclePlus,
+  CircleMinus,
+  TrendingUp,
+  TrendingDown,
+  EllipsisVertical,
+  UserPlus,
+  Pencil,
+  Shield,
+  UserCog,
+  UserX,
+  Calendar,
+  ExternalLink,
+  CircleAlert,
+  MapPin,
+  Thermometer,
+  Barcode,
+  ScanLine,
+  ClipboardList,
+  ClipboardClock,
+  Info,
+  Clock,
+  Bot,
+  FileText,
+  Trash2,
+  ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
 
-// Single source of truth for the app's icon names.
-// This keeps icon usage consistent and avoids repeated string literals across the UI.
+/** Maps the app's icon names to Lucide components. */
 const ICONS: Record<string, LucideIcon> = {
-  // Navigation and shell
   dashboard: LayoutDashboard,
-  help: HelpCircle,
-  logout: LogOut,
-  search: Search,
-  expand_more: ChevronDown,
-  chevron_left: ChevronLeft,
-  chevron_right: ChevronRight,
-  filter_list: SlidersHorizontal,
-  more_vert: EllipsisVertical,
-  open_in_new: ExternalLink,
-  arrow_forward: ArrowRight,
-  arrow_outward: ArrowUpRight,
-  swap_horiz: ArrowLeftRight,
-  settings: Settings,
-
-  // Business and healthcare data
   medication: Pill,
   inventory_2: Package,
   warning: AlertTriangle,
@@ -182,14 +94,25 @@ const ICONS: Record<string, LucideIcon> = {
   medical_services: Stethoscope,
   mail: Mail,
   lock: Lock,
+  arrow_forward: ArrowRight,
   mark_email_read: MailCheck,
   lock_reset: KeyRound,
+  help: HelpCircle,
+  logout: LogOut,
   person: User,
+  settings: Settings,
+  swap_horiz: ArrowLeftRight,
   shopping_cart: ShoppingCart,
   bar_chart: BarChart3,
   group: Users,
   receipt_long: Receipt,
   notifications: Bell,
+  search: Search,
+  expand_more: ChevronDown,
+  chevron_left: ChevronLeft,
+  chevron_right: ChevronRight,
+  filter_list: SlidersHorizontal,
+  download: Download,
   star: Star,
   close: X,
   check: Check,
@@ -197,12 +120,14 @@ const ICONS: Record<string, LucideIcon> = {
   remove_circle: CircleMinus,
   trending_up: TrendingUp,
   trending_down: TrendingDown,
+  more_vert: EllipsisVertical,
   person_add: UserPlus,
   edit: Pencil,
   shield: Shield,
   manage_accounts: UserCog,
   person_off: UserX,
   calendar_month: Calendar,
+  open_in_new: ExternalLink,
   error: CircleAlert,
   place: MapPin,
   thermostat: Thermometer,
@@ -215,31 +140,27 @@ const ICONS: Record<string, LucideIcon> = {
   bot: Bot,
   description: FileText,
   delete: Trash2,
+  arrow_outward: ArrowUpRight,
   visibility: Eye,
   visibility_off: EyeOff,
 };
 
 type IconProps = {
+  /** The icon's lookup name, e.g. "lock" or "mail" — maps to a Lucide component below. */
   name: string;
+  /** Pixel size. Defaults to 19. */
   size?: number;
+  /** Tailwind text-colour class, e.g. "text-muted". Defaults to inherited colour. */
   className?: string;
 };
 
+/** Decorative (aria-hidden) icon. Icon-only buttons need their own aria-label. */
 export default function Icon({ name, size = 19, className = "" }: IconProps) {
-  const IconComponent = ICONS[name];
-
-  if (!IconComponent) {
+  const Cmp = ICONS[name];
+  if (!Cmp) {
+    // Fail loudly in dev rather than silently rendering nothing.
     console.warn(`Icon: no Lucide mapping for "${name}"`);
     return null;
   }
-
-  return (
-    <IconComponent
-      aria-hidden="true"
-      width={size}
-      height={size}
-      className={className}
-      strokeWidth={2}
-    />
-  );
+  return <Cmp aria-hidden="true" width={size} height={size} className={className} strokeWidth={2} />;
 }
