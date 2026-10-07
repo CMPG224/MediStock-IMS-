@@ -6,20 +6,40 @@ import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 import BackToSignIn from "./BackToSignIn";
+import { supabase } from "../../lib/supabase";
 
 export default function HospitalPortalPage() {
     const [facilityCode, setFacilityCode] = useState("");
     const [staffId,setStaffId] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
-
-    function handleContinue() {
+    
+    async function handleContinue() {
         if (!facilityCode.trim() || !staffId.trim()) {
             setError("Facility code and staff ID are both required.");
             return;
         }
 
         setError("");
+
+        const { data, error: fnError } = await supabase.functions.invoke(
+            "hospital-login",
+            { body: { facility_code: facilityCode, staff_id: staffId } }
+        );
+
+        if (fnError || !data?.access_token) {
+            setError("No account matches that facility code and staff ID.");
+            return;
+        }
+
+        // The function returned real tokens, but the browser's Supabase client
+        // doesn't know about them yet -- this line is what actually logs the
+        // user in on the frontend.
+        await supabase.auth.setSession({
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+        });
+
         router.push("/dashboard");
     }
 
