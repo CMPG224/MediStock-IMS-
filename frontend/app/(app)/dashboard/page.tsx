@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Header from "@/components/app-shell/Header";
 import KpiCard from "@/components/app-shell/KpiCard";
@@ -6,13 +8,25 @@ import UrgentAlerts from "@/components/app-shell/UrgentAlerts";
 import Icon from "@/components/Icon";
 import LineChart from "@/components/charts/LineChart";
 import StockMovementChart from "@/components/charts/StockMovementChart";
-import { KPIS, TRANSACTIONS } from "@/lib/mock-data";
+import { useProfile } from "@/components/app-shell/ProfileProvider";
+import LoadError from "@/components/ui/LoadError";
+import { fetchKpis, fetchRecentTransactions } from "@/lib/data/dashboard";
+import { useAsync } from "@/lib/useAsync";
 
 const PANEL = "rounded-[14px] border border-border-soft bg-white shadow-[0_2px_10px_rgba(16,35,64,.04)]";
 
 const QTY_COLOR = { success: "text-success", danger: "text-danger", neutral: "text-ink" } as const;
 
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+}
+
 export default function DashboardPage() {
+  const { profile } = useProfile();
+  const kpis = useAsync(fetchKpis, []);
+  const txs = useAsync(fetchRecentTransactions, []);
+
   return (
     <>
       <Header searchPlaceholder="Search medicines, suppliers, or transactions..." />
@@ -20,7 +34,10 @@ export default function DashboardPage() {
       <div className="mx-auto flex w-full max-w-[1400px] flex-1 flex-col gap-5 p-4 sm:p-7">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div className="flex flex-col gap-1">
-            <h1 className="text-[26px] font-bold tracking-[-.02em] text-ink">Good morning, Dr. Mokwena.</h1>
+            <h1 className="text-[26px] font-bold tracking-[-.02em] text-ink">
+              {greeting()}
+              {profile ? `, ${profile.fullName}.` : "."}
+            </h1>
             <p className="text-[14.5px] text-muted">Here&rsquo;s your inventory overview for today.</p>
           </div>
           <div className="flex gap-2.5">
@@ -31,21 +48,25 @@ export default function DashboardPage() {
               <Icon name="upload" size={17} />
               Export Report
             </button>
-            <button
-              type="button"
+            <Link
+              href="/medicine"
               className="flex h-11 items-center gap-2 rounded-[10px] bg-brand px-4.5 text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(11,76,140,.2)] transition hover:bg-brand-dark active:scale-[0.98]"
             >
               <Icon name="add" size={18} />
               Add Medicine
-            </button>
+            </Link>
           </div>
         </div>
+
+        {(kpis.error || txs.error) && (
+          <LoadError message={kpis.error ?? txs.error!} onRetry={() => { kpis.reload(); txs.reload(); }} />
+        )}
 
         {/* gap-px over a border-coloured background draws the dividers. */}
         <dl
           className={`${PANEL} grid grid-cols-2 gap-px overflow-hidden bg-border-soft sm:grid-cols-3 xl:grid-cols-6`}
         >
-          {KPIS.map((kpi) => (
+          {(kpis.data ?? []).map((kpi) => (
             <KpiCard key={kpi.label} {...kpi} />
           ))}
         </dl>
@@ -83,8 +104,13 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-soft">
-                  {TRANSACTIONS.map((tx) => (
-                    <tr key={tx.item + tx.time} className="text-[14px] transition-colors hover:bg-page">
+                  {txs.data?.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-[13.5px] text-muted">No transactions yet.</td>
+                    </tr>
+                  )}
+                  {(txs.data ?? []).map((tx) => (
+                    <tr key={tx.id} className="text-[14px] transition-colors hover:bg-page">
                       <td className="px-6 py-3.5 font-semibold text-ink">{tx.item}</td>
                       <td className="px-6 py-3.5 text-body">{tx.type}</td>
                       <td className={`px-6 py-3.5 text-right font-semibold tabular-nums ${QTY_COLOR[tx.qtyTone]}`}>
