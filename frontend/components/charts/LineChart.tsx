@@ -1,39 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { TREND_RANGES } from "@/lib/mock-data";
+import { fetchTrend, type TrendRange } from "@/lib/data/dashboard";
+import { useAsync } from "@/lib/useAsync";
 
-type Range = keyof typeof TREND_RANGES;
+type Range = TrendRange;
 const RANGES: Range[] = ["1W", "1M", "1Y"];
 const BRAND = "#0B4C8C";
 
-/**
- * The Inventory Trend chart with its 1W / 1M / 1Y segmented control. Plain
- * SVG: a soft area fill, quiet guide lines, and a single marker on the most
- * recent point (the one people actually read), rather than a dot on every
- * value.
- *
- * "use client" because switching ranges is local UI state.
- */
+/** Inventory Trend chart (plain SVG) with a 1W / 1M / 1Y toggle. */
 export default function LineChart() {
   const [range, setRange] = useState<Range>("1W");
-  const { labels, values } = TREND_RANGES[range];
+  const { data, error } = useAsync(() => fetchTrend(range), [range]);
+  const labels = data?.labels ?? [];
+  // A single point can't draw a line, so it's repeated flat.
+  const values = data?.values.length === 1 ? [data.values[0], data.values[0]] : (data?.values ?? []);
 
   const width = 640;
   const height = 220;
   const padding = { top: 12, right: 10, bottom: 4, left: 10 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
-  const max = Math.max(...values);
-  const stepX = chartW / (values.length - 1);
+  // Scaled to the visible range so day-to-day changes in large totals show.
+  const hi = Math.max(...values, 1);
+  const lo = Math.min(...values) * 0.9;
+  const stepX = chartW / Math.max(values.length - 1, 1);
 
   const points = values.map((v, i) => ({
     x: padding.left + i * stepX,
-    y: padding.top + chartH - (v / max) * chartH,
+    y: padding.top + chartH - ((v - lo) / (hi - lo || 1)) * chartH,
   }));
-  const last = points[points.length - 1];
+  const first = points[0] ?? { x: 0, y: 0 };
+  const last = points[points.length - 1] ?? first;
   const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
-  const areaPath = `${linePath} L ${last.x} ${padding.top + chartH} L ${points[0].x} ${padding.top + chartH} Z`;
+  const areaPath = `${linePath} L ${last.x} ${padding.top + chartH} L ${first.x} ${padding.top + chartH} Z`;
   const guides = [0.25, 0.5, 0.75].map((f) => padding.top + chartH * f);
 
   return (
@@ -58,6 +58,11 @@ export default function LineChart() {
       </div>
 
       <div className="mt-5">
+        {values.length === 0 ? (
+          <p className="flex items-center justify-center text-center text-[13px] text-muted" style={{ height }}>
+            {error ?? (data ? "No inventory snapshots for this range yet." : "Loading…")}
+          </p>
+        ) : (
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full" style={{ height }} role="img" aria-label={`Inventory trend, ${range}`}>
           <defs>
             <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
@@ -74,11 +79,12 @@ export default function LineChart() {
           <circle cx={last.x} cy={last.y} r={8} fill={BRAND} opacity={0.12} />
           <circle cx={last.x} cy={last.y} r={4} fill="white" stroke={BRAND} strokeWidth={2.25} />
         </svg>
+        )}
       </div>
 
       <div className="flex justify-between px-1 pt-2.5 text-[11.5px] font-medium text-muted">
         {labels.map((label, i) => (
-          <span key={label} className={i === labels.length - 1 ? "font-semibold text-ink" : undefined}>
+          <span key={`${label}-${i}`} className={i === labels.length - 1 ? "font-semibold text-ink" : undefined}>
             {label}
           </span>
         ))}
