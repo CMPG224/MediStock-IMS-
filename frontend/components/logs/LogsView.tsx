@@ -1,33 +1,48 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useState } from "react";
 import Icon from "@/components/Icon";
 import Avatar from "@/components/ui/Avatar";
 import Badge, { type BadgeTone } from "@/components/ui/Badge";
 import { BTN_OUTLINE, CARD, TD, TH } from "@/components/ui/buttons";
 import PageHeader from "@/components/ui/PageHeader";
+import LoadError from "@/components/ui/LoadError";
 import Pagination from "@/components/ui/Pagination";
-import { LOGS, LOG_CATEGORIES, LOG_TOTAL, type LogResult } from "@/lib/mock/logs";
+import { initial } from "@/lib/format";
+import { LOG_CATEGORIES, fetchLogs, type LogEntry, type LogResult } from "@/lib/data/logs";
+import { PAGE_SIZE, pageCount } from "@/lib/data/query";
+import { useAsync } from "@/lib/useAsync";
 
 const RESULT_TONE: Record<LogResult, BadgeTone> = { Success: "success", Warning: "warning", Failed: "danger" };
 
 export default function LogsView() {
   const [category, setCategory] = useState<(typeof LOG_CATEGORIES)[number]>("All");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const search = useDeferredValue(query);
+  const list = useAsync(() => fetchLogs(category, search, page), [category, search, page]);
 
-  const rows = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return LOGS.filter(
-      (l) =>
-        (category === "All" || l.category === category) &&
-        (!q || [l.user, l.action, l.entity, l.ip, l.timestamp, l.result].some((v) => v.toLowerCase().includes(q))),
-    );
-  }, [category, query]);
+  const rows: LogEntry[] = list.data?.rows ?? [];
+  const total = list.data?.total ?? 0;
+  const first = (page - 1) * PAGE_SIZE + 1;
+  const summary = !list.data
+    ? "Loading…"
+    : total === 0
+      ? "No events"
+      : `Showing ${first} to ${first + rows.length - 1} of ${total.toLocaleString("en-US")} events`;
 
-  const filtered = category !== "All" || query.trim() !== "";
-  const summary = filtered
-    ? `Showing ${rows.length} of ${LOGS.length} loaded events`
-    : `Showing 1 to ${LOGS.length} of ${LOG_TOTAL.toLocaleString("en-US")} events`;
+  function downloadCsv() {
+    const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+    const header = ["Timestamp", "User", "Role", "Action", "Category", "Entity", "IP Address", "Result"];
+    const body = rows.map((l) => [l.timestamp, l.user, l.role, l.action, l.category, l.entity, l.ip, l.result]);
+    const blob = new Blob([[header, ...body].map((r) => r.map(esc).join(",")).join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "activity-logs.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-[22px] p-7">
@@ -35,7 +50,7 @@ export default function LogsView() {
         title="Activity Logs"
         description="A complete audit trail of every action taken in the system."
         actions={
-          <button type="button" className={BTN_OUTLINE}>
+          <button type="button" className={BTN_OUTLINE} onClick={downloadCsv}>
             <Icon name="download" size={18} />
             Export CSV
           </button>
@@ -48,7 +63,10 @@ export default function LogsView() {
             key={c}
             type="button"
             aria-pressed={category === c}
-            onClick={() => setCategory(c)}
+            onClick={() => {
+              setCategory(c);
+              setPage(1);
+            }}
             className={`h-9 rounded-full px-4 text-[13.5px] font-semibold ${
               category === c ? "bg-brand text-white" : "border border-border bg-white text-body hover:bg-page"
             }`}
@@ -58,6 +76,8 @@ export default function LogsView() {
         ))}
       </div>
 
+      {list.error && <LoadError message={list.error} onRetry={list.reload} />}
+
       <section className={`${CARD} overflow-hidden`}>
         <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
           <h2 className="text-[18px] font-bold text-ink">Audit Trail</h2>
@@ -66,7 +86,10 @@ export default function LogsView() {
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
               aria-label="Search activity logs in table"
               placeholder="Filter events..."
               className="w-full bg-transparent text-[13.5px] text-ink placeholder:text-muted focus:outline-none"
@@ -91,7 +114,7 @@ export default function LogsView() {
                   <td className={`${TD} whitespace-nowrap font-mono text-[13px] text-body`}>{l.timestamp}</td>
                   <td className={TD}>
                     <div className="flex items-center gap-3">
-                      <Avatar letter={l.user === "Unknown" ? "?" : l.user.replace("Dr. ", "").charAt(0)} size={34} />
+                      <Avatar letter={l.user === "Unknown" ? "?" : initial(l.user)} size={34} />
                       <div className="flex flex-col">
                         <span className="font-bold text-ink">{l.user}</span>
                         <span className="text-[12.5px] text-muted">{l.role}</span>
@@ -106,7 +129,7 @@ export default function LogsView() {
                   </td>
                 </tr>
               ))}
-              {rows.length === 0 && (
+              {list.data && rows.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-10 text-center text-[14px] text-muted">
                     No events match your filters.
@@ -117,7 +140,7 @@ export default function LogsView() {
           </table>
         </div>
         <div className="border-t border-border-soft">
-          <Pagination summary={summary} pages={351} />
+          <Pagination summary={summary} page={page} pages={pageCount(total)} onPageChange={setPage} />
         </div>
       </section>
     </div>

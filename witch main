@@ -1,0 +1,950 @@
+[1mdiff --git a/supabase/.gitignore b/supabase/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..ad9264f[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/.gitignore[m
+[36m@@ -0,0 +1,8 @@[m
+[32m+[m[32m# Supabase[m
+[32m+[m[32m.branches[m
+[32m+[m[32m.temp[m
+[32m+[m
+[32m+[m[32m# dotenvx[m
+[32m+[m[32m.env.keys[m
+[32m+[m[32m.env.local[m
+[32m+[m[32m.env.*.local[m
+[1mdiff --git a/supabase/config.toml b/supabase/config.toml[m
+[1mnew file mode 100644[m
+[1mindex 0000000..f4cb948[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/config.toml[m
+[36m@@ -0,0 +1,415 @@[m
+[32m+[m[32m# For detailed configuration reference documentation, visit:[m
+[32m+[m[32m# https://supabase.com/docs/guides/local-development/cli/config[m
+[32m+[m[32m# A string used to distinguish different Supabase projects on the same host. Defaults to the[m
+[32m+[m[32m# working directory name when running `supabase init`.[m
+[32m+[m[32mproject_id = "MediStock-IMS"[m
+[32m+[m
+[32m+[m[32m[api][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Port to use for the API URL.[m
+[32m+[m[32mport = 54321[m
+[32m+[m[32m# Schemas to expose in your API. Tables, views and stored procedures in this schema will get API[m
+[32m+[m[32m# endpoints. `public` and `graphql_public` schemas are included by default.[m
+[32m+[m[32mschemas = ["public", "graphql_public"][m
+[32m+[m[32m# Extra schemas to add to the search_path of every request.[m
+[32m+[m[32mextra_search_path = ["public", "extensions"][m
+[32m+[m[32m# The maximum number of rows returns from a view, table, or stored procedure. Limits payload size[m
+[32m+[m[32m# for accidental or malicious requests.[m
+[32m+[m[32mmax_rows = 1000[m
+[32m+[m[32m# Controls whether new tables, views, sequences and functions created in the `public` schema by[m
+[32m+[m[32m# `postgres` are reachable through the Data API roles (`anon`, `authenticated`, `service_role`)[m
+[32m+[m[32m# without explicit GRANTs, matching the cloud default. Set to `false` to require explicit GRANTs[m
+[32m+[m[32m# instead. Left unset, a fresh project falls back to `true`.[m
+[32m+[m[32m# auto_expose_new_tables = true[m
+[32m+[m
+[32m+[m[32m[api.tls][m
+[32m+[m[32m# Enable HTTPS endpoints locally using a self-signed certificate.[m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# Paths to self-signed certificate pair.[m
+[32m+[m[32m# cert_path = "../certs/my-cert.pem"[m
+[32m+[m[32m# key_path = "../certs/my-key.pem"[m
+[32m+[m
+[32m+[m[32m[db][m
+[32m+[m[32m# Port to use for the local database URL.[m
+[32m+[m[32mport = 54322[m
+[32m+[m[32m# Port used by db diff command to initialize the shadow database.[m
+[32m+[m[32mshadow_port = 54320[m
+[32m+[m[32m# Maximum amount of time to wait for health check when starting the local database.[m
+[32m+[m[32mhealth_timeout = "2m"[m
+[32m+[m[32m# The database major version to use. This has to be the same as your remote database's. Run `SHOW[m
+[32m+[m[32m# server_version;` on the remote database to check.[m
+[32m+[m[32mmajor_version = 17[m
+[32m+[m
+[32m+[m[32m[db.pooler][m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# Port to use for the local connection pooler.[m
+[32m+[m[32mport = 54329[m
+[32m+[m[32m# Specifies when a server connection can be reused by other clients.[m
+[32m+[m[32m# Configure one of the supported pooler modes: `transaction`, `session`.[m
+[32m+[m[32mpool_mode = "transaction"[m
+[32m+[m[32m# How many server connections to allow per user/database pair.[m
+[32m+[m[32mdefault_pool_size = 20[m
+[32m+[m[32m# Maximum number of client connections allowed.[m
+[32m+[m[32mmax_client_conn = 100[m
+[32m+[m
+[32m+[m[32m# [db.vault][m
+[32m+[m[32m# secret_key = "env(SECRET_VALUE)"[m
+[32m+[m
+[32m+[m[32m[db.migrations][m
+[32m+[m[32m# If disabled, migrations will be skipped during a db push or reset.[m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Specifies an ordered list of schema files, directories, or glob patterns that describe your database.[m
+[32m+[m[32m# Supports paths relative to supabase directory: "./schemas/*.sql", "./database".[m
+[32m+[m[32mschema_paths = [][m
+[32m+[m
+[32m+[m[32m[db.seed][m
+[32m+[m[32m# If enabled, seeds the database after migrations during a db reset.[m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Specifies an ordered list of seed files to load during db reset.[m
+[32m+[m[32m# Supports glob patterns relative to supabase directory: "./seeds/*.sql"[m
+[32m+[m[32msql_paths = ["./seed.sql"][m
+[32m+[m
+[32m+[m[32m[db.network_restrictions][m
+[32m+[m[32m# Enable management of network restrictions.[m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# List of IPv4 CIDR blocks allowed to connect to the database.[m
+[32m+[m[32m# Defaults to allow all IPv4 connections. Set empty array to block all IPs.[m
+[32m+[m[32mallowed_cidrs = ["0.0.0.0/0"][m
+[32m+[m[32m# List of IPv6 CIDR blocks allowed to connect to the database.[m
+[32m+[m[32m# Defaults to allow all IPv6 connections. Set empty array to block all IPs.[m
+[32m+[m[32mallowed_cidrs_v6 = ["::/0"][m
+[32m+[m
+[32m+[m[32m# Uncomment to reject non-secure connections to the database.[m
+[32m+[m[32m# [db.ssl_enforcement][m
+[32m+[m[32m# enabled = true[m
+[32m+[m
+[32m+[m[32m[realtime][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Bind realtime via either IPv4 or IPv6. (default: IPv4)[m
+[32m+[m[32m# ip_version = "IPv6"[m
+[32m+[m[32m# The maximum length in bytes of HTTP request headers. (default: 4096)[m
+[32m+[m[32m# max_header_length = 4096[m
+[32m+[m
+[32m+[m[32m[studio][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Port to use for Supabase Studio.[m
+[32m+[m[32mport = 54323[m
+[32m+[m[32m# External URL of the API server that frontend connects to.[m
+[32m+[m[32mapi_url = "http://127.0.0.1"[m
+[32m+[m[32m# OpenAI API Key to use for Supabase AI in the Supabase Studio.[m
+[32m+[m[32mopenai_api_key = "env(OPENAI_API_KEY)"[m
+[32m+[m
+[32m+[m[32m# Email testing server. Emails sent with the local dev setup are not actually sent - rather, they[m
+[32m+[m[32m# are monitored, and you can view the emails that would have been sent from the web interface.[m
+[32m+[m[32m[local_smtp][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Port to use for the email testing server web interface.[m
+[32m+[m[32mport = 54324[m
+[32m+[m[32m# Uncomment to expose additional ports for testing user applications that send emails.[m
+[32m+[m[32m# smtp_port = 54325[m
+[32m+[m[32m# pop3_port = 54326[m
+[32m+[m[32m# admin_email = "admin@email.com"[m
+[32m+[m[32m# sender_name = "Admin"[m
+[32m+[m
+[32m+[m[32m[storage][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# The maximum file size allowed (e.g. "5MB", "500KB").[m
+[32m+[m[32mfile_size_limit = "50MiB"[m
+[32m+[m
+[32m+[m[32m# Uncomment to configure local storage buckets[m
+[32m+[m[32m# [storage.buckets.images][m
+[32m+[m[32m# public = false[m
+[32m+[m[32m# file_size_limit = "50MiB"[m
+[32m+[m[32m# allowed_mime_types = ["image/png", "image/jpeg"][m
+[32m+[m[32m# objects_path = "./images"[m
+[32m+[m
+[32m+[m[32m# Allow connections via S3 compatible clients[m
+[32m+[m[32m[storage.s3_protocol][m
+[32m+[m[32menabled = true[m
+[32m+[m
+[32m+[m[32m# Image transformation API is available to Supabase Pro plan.[m
+[32m+[m[32m# [storage.image_transformation][m
+[32m+[m[32m# enabled = true[m
+[32m+[m
+[32m+[m[32m# Store analytical data in S3 for running ETL jobs over Iceberg Catalog[m
+[32m+[m[32m# This feature is only available on the hosted platform.[m
+[32m+[m[32m[storage.analytics][m
+[32m+[m[32menabled = false[m
+[32m+[m[32mmax_namespaces = 5[m
+[32m+[m[32mmax_tables = 10[m
+[32m+[m[32mmax_catalogs = 2[m
+[32m+[m
+[32m+[m[32m# Analytics Buckets is available to Supabase Pro plan.[m
+[32m+[m[32m# [storage.analytics.buckets.my-warehouse][m
+[32m+[m
+[32m+[m[32m# Store vector embeddings in S3 for large and durable datasets[m
+[32m+[m[32m[storage.vector][m
+[32m+[m[32menabled = true[m
+[32m+[m[32mmax_buckets = 10[m
+[32m+[m[32mmax_indexes = 5[m
+[32m+[m
+[32m+[m[32m# Vector Buckets is available to Supabase Pro plan.[m
+[32m+[m[32m# [storage.vector.buckets.documents-openai][m
+[32m+[m
+[32m+[m[32m[auth][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# The base URL of your website. Used as an allow-list for redirects and for constructing URLs used[m
+[32m+[m[32m# in emails.[m
+[32m+[m[32msite_url = "http://127.0.0.1:3000"[m
+[32m+[m[32m# The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.[m
+[32m+[m[32m# external_url = ""[m
+[32m+[m[32m# A list of *exact* URLs that auth providers are permitted to redirect to post authentication.[m
+[32m+[m[32madditional_redirect_urls = ["https://127.0.0.1:3000"][m
+[32m+[m[32m# How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).[m
+[32m+[m[32mjwt_expiry = 3600[m
+[32m+[m[32m# JWT issuer URL. If not set, defaults to auth.external_url.[m
+[32m+[m[32m# jwt_issuer = ""[m
+[32m+[m[32m# Path to JWT signing key. DO NOT commit your signing keys file to git.[m
+[32m+[m[32m# signing_keys_path = "./signing_keys.json"[m
+[32m+[m[32m# If disabled, the refresh token will never expire.[m
+[32m+[m[32menable_refresh_token_rotation = true[m
+[32m+[m[32m# Allows refresh tokens to be reused after expiry, up to the specified interval in seconds.[m
+[32m+[m[32m# Requires enable_refresh_token_rotation = true.[m
+[32m+[m[32mrefresh_token_reuse_interval = 10[m
+[32m+[m[32m# Allow/disallow new user signups to your project.[m
+[32m+[m[32menable_signup = true[m
+[32m+[m[32m# Allow/disallow anonymous sign-ins to your project.[m
+[32m+[m[32menable_anonymous_sign_ins = false[m
+[32m+[m[32m# Allow/disallow testing manual linking of accounts[m
+[32m+[m[32menable_manual_linking = false[m
+[32m+[m[32m# Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.[m
+[32m+[m[32mminimum_password_length = 6[m
+[32m+[m[32m# Passwords that do not meet the following requirements will be rejected as weak. Supported values[m
+[32m+[m[32m# are: `letters_digits`, `lower_upper_letters_digits`, `lower_upper_letters_digits_symbols`[m
+[32m+[m[32mpassword_requirements = ""[m
+[32m+[m
+[32m+[m[32m# Configure passkey sign-ins.[m
+[32m+[m[32m# [auth.passkey][m
+[32m+[m[32m# enabled = false[m
+[32m+[m
+[32m+[m[32m# Configure WebAuthn relying party settings (required when passkey is enabled).[m
+[32m+[m[32m# [auth.webauthn][m
+[32m+[m[32m# rp_display_name = "Supabase"[m
+[32m+[m[32m# rp_id = "localhost"[m
+[32m+[m[32m# rp_origins = ["http://127.0.0.1:3000"][m
+[32m+[m
+[32m+[m[32m[auth.rate_limit][m
+[32m+[m[32m# Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.[m
+[32m+[m[32memail_sent = 2[m
+[32m+[m[32m# Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.[m
+[32m+[m[32msms_sent = 30[m
+[32m+[m[32m# Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.[m
+[32m+[m[32manonymous_users = 30[m
+[32m+[m[32m# Number of sessions that can be refreshed in a 5 minute interval per IP address.[m
+[32m+[m[32mtoken_refresh = 150[m
+[32m+[m[32m# Number of sign up and sign-in requests that can be made in a 5 minute interval per IP address (excludes anonymous users).[m
+[32m+[m[32msign_in_sign_ups = 30[m
+[32m+[m[32m# Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.[m
+[32m+[m[32mtoken_verifications = 30[m
+[32m+[m[32m# Number of Web3 logins that can be made in a 5 minute interval per IP address.[m
+[32m+[m[32mweb3 = 30[m
+[32m+[m
+[32m+[m[32m# Configure one of the supported captcha providers: `hcaptcha`, `turnstile`.[m
+[32m+[m[32m# [auth.captcha][m
+[32m+[m[32m# enabled = true[m
+[32m+[m[32m# provider = "hcaptcha"[m
+[32m+[m[32m# secret = ""[m
+[32m+[m
+[32m+[m[32m[auth.email][m
+[32m+[m[32m# Allow/disallow new user signups via email to your project.[m
+[32m+[m[32menable_signup = true[m
+[32m+[m[32m# If enabled, a user will be required to confirm any email change on both the old, and new email[m
+[32m+[m[32m# addresses. If disabled, only the new email is required to confirm.[m
+[32m+[m[32mdouble_confirm_changes = true[m
+[32m+[m[32m# If enabled, users need to confirm their email address before signing in.[m
+[32m+[m[32menable_confirmations = false[m
+[32m+[m[32m# If enabled, users will need to reauthenticate or have logged in recently to change their password.[m
+[32m+[m[32msecure_password_change = false[m
+[32m+[m[32m# Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.[m
+[32m+[m[32mmax_frequency = "1s"[m
+[32m+[m[32m# Number of characters used in the email OTP.[m
+[32m+[m[32motp_length = 6[m
+[32m+[m[32m# Number of seconds before the email OTP expires (defaults to 1 hour).[m
+[32m+[m[32motp_expiry = 3600[m
+[32m+[m
+[32m+[m[32m# Use a production-ready SMTP server[m
+[32m+[m[32m# [auth.email.smtp][m
+[32m+[m[32m# enabled = true[m
+[32m+[m[32m# host = "smtp.sendgrid.net"[m
+[32m+[m[32m# port = 587[m
+[32m+[m[32m# user = "apikey"[m
+[32m+[m[32m# pass = "env(SENDGRID_API_KEY)"[m
+[32m+[m[32m# admin_email = "admin@email.com"[m
+[32m+[m[32m# sender_name = "Admin"[m
+[32m+[m
+[32m+[m[32m# Uncomment to customize email template[m
+[32m+[m[32m# [auth.email.template.invite][m
+[32m+[m[32m# subject = "You have been invited"[m
+[32m+[m[32m# content_path = "./supabase/templates/invite.html"[m
+[32m+[m
+[32m+[m[32m# Uncomment to customize notification email template[m
+[32m+[m[32m# [auth.email.notification.password_changed][m
+[32m+[m[32m# enabled = true[m
+[32m+[m[32m# subject = "Your password has been changed"[m
+[32m+[m[32m# content_path = "./supabase/templates/password_changed_notification.html"[m
+[32m+[m
+[32m+[m[32m[auth.sms][m
+[32m+[m[32m# Allow/disallow new user signups via SMS to your project.[m
+[32m+[m[32menable_signup = false[m
+[32m+[m[32m# If enabled, users need to confirm their phone number before signing in.[m
+[32m+[m[32menable_confirmations = false[m
+[32m+[m[32m# Template for sending OTP to users[m
+[32m+[m[32mtemplate = "Your code is {{ .Code }}"[m
+[32m+[m[32m# Controls the minimum amount of time that must pass before sending another sms otp.[m
+[32m+[m[32mmax_frequency = "5s"[m
+[32m+[m
+[32m+[m[32m# Use pre-defined map of phone number to OTP for testing.[m
+[32m+[m[32m# [auth.sms.test_otp][m
+[32m+[m[32m# 4152127777 = "123456"[m
+[32m+[m
+[32m+[m[32m# Configure logged in session timeouts.[m
+[32m+[m[32m# [auth.sessions][m
+[32m+[m[32m# Force log out after the specified duration.[m
+[32m+[m[32m# timebox = "24h"[m
+[32m+[m[32m# Force log out if the user has been inactive longer than the specified duration.[m
+[32m+[m[32m# inactivity_timeout = "8h"[m
+[32m+[m
+[32m+[m[32m# This hook runs before a new user is created and allows developers to reject the request based on the incoming user object.[m
+[32m+[m[32m# [auth.hook.before_user_created][m
+[32m+[m[32m# enabled = true[m
+[32m+[m[32m# uri = "pg-functions://postgres/auth/before-user-created-hook"[m
+[32m+[m
+[32m+[m[32m# This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.[m
+[32m+[m[32m# [auth.hook.custom_access_token][m
+[32m+[m[32m# enabled = true[m
+[32m+[m[32m# uri = "pg-functions://<database>/<schema>/<hook_name>"[m
+[32m+[m
+[32m+[m[32m# Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.[m
+[32m+[m[32m[auth.sms.twilio][m
+[32m+[m[32menabled = false[m
+[32m+[m[32maccount_sid = ""[m
+[32m+[m[32mmessage_service_sid = ""[m
+[32m+[m[32m# DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:[m
+[32m+[m[32mauth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"[m
+[32m+[m
+[32m+[m[32m# Multi-factor-authentication is available to Supabase Pro plan.[m
+[32m+[m[32m[auth.mfa][m
+[32m+[m[32m# Control how many MFA factors can be enrolled at once per user.[m
+[32m+[m[32mmax_enrolled_factors = 10[m
+[32m+[m
+[32m+[m[32m# Control MFA via App Authenticator (TOTP)[m
+[32m+[m[32m[auth.mfa.totp][m
+[32m+[m[32menroll_enabled = false[m
+[32m+[m[32mverify_enabled = false[m
+[32m+[m
+[32m+[m[32m# Configure MFA via Phone Messaging[m
+[32m+[m[32m[auth.mfa.phone][m
+[32m+[m[32menroll_enabled = false[m
+[32m+[m[32mverify_enabled = false[m
+[32m+[m[32motp_length = 6[m
+[32m+[m[32mtemplate = "Your code is {{ .Code }}"[m
+[32m+[m[32mmax_frequency = "5s"[m
+[32m+[m
+[32m+[m[32m# Configure MFA via WebAuthn[m
+[32m+[m[32m# [auth.mfa.web_authn][m
+[32m+[m[32m# enroll_enabled = true[m
+[32m+[m[32m# verify_enabled = true[m
+[32m+[m
+[32m+[m[32m# Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,[m
+[32m+[m[32m# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,[m
+[32m+[m[32m# `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.[m
+[32m+[m[32m[auth.external.apple][m
+[32m+[m[32menabled = false[m
+[32m+[m[32mclient_id = ""[m
+[32m+[m[32m# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:[m
+[32m+[m[32msecret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"[m
+[32m+[m[32m# Overrides the default auth callback URL derived from auth.external_url.[m
+[32m+[m[32mredirect_uri = ""[m
+[32m+[m[32m# Overrides the default auth provider URL. Used to support self-hosted gitlab, single-tenant Azure,[m
+[32m+[m[32m# or any other third-party OIDC providers.[m
+[32m+[m[32murl = ""[m
+[32m+[m[32m# If enabled, the nonce check will be skipped. Required for local sign in with Google auth.[m
+[32m+[m[32mskip_nonce_check = false[m
+[32m+[m[32m# If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.[m
+[32m+[m[32memail_optional = false[m
+[32m+[m
+[32m+[m[32m# Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.[m
+[32m+[m[32m# You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.[m
+[32m+[m[32m[auth.web3.solana][m
+[32m+[m[32menabled = false[m
+[32m+[m
+[32m+[m[32m# Use Firebase Auth as a third-party provider alongside Supabase Auth.[m
+[32m+[m[32m[auth.third_party.firebase][m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# project_id = "my-firebase-project"[m
+[32m+[m
+[32m+[m[32m# Use Auth0 as a third-party provider alongside Supabase Auth.[m
+[32m+[m[32m[auth.third_party.auth0][m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# tenant = "my-auth0-tenant"[m
+[32m+[m[32m# tenant_region = "us"[m
+[32m+[m
+[32m+[m[32m# Use AWS Cognito (Amplify) as a third-party provider alongside Supabase Auth.[m
+[32m+[m[32m[auth.third_party.aws_cognito][m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# user_pool_id = "my-user-pool-id"[m
+[32m+[m[32m# user_pool_region = "us-east-1"[m
+[32m+[m
+[32m+[m[32m# Use Clerk as a third-party provider alongside Supabase Auth.[m
+[32m+[m[32m[auth.third_party.clerk][m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# Obtain from https://clerk.com/setup/supabase[m
+[32m+[m[32m# domain = "example.clerk.accounts.dev"[m
+[32m+[m
+[32m+[m[32m# OAuth server configuration[m
+[32m+[m[32m[auth.oauth_server][m
+[32m+[m[32m# Enable OAuth server functionality[m
+[32m+[m[32menabled = false[m
+[32m+[m[32m# Path for OAuth consent flow UI[m
+[32m+[m[32mauthorization_url_path = "/oauth/consent"[m
+[32m+[m[32m# Allow dynamic client registration[m
+[32m+[m[32mallow_dynamic_registration = false[m
+[32m+[m
+[32m+[m[32m[edge_runtime][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Supported request policies: `oneshot`, `per_worker`.[m
+[32m+[m[32m# `per_worker` (default) — enables hot reload during local development.[m
+[32m+[m[32m# `oneshot` — fallback mode if hot reload causes issues (e.g. in large repos or with symlinks).[m
+[32m+[m[32mpolicy = "per_worker"[m
+[32m+[m[32m# Port to attach the Chrome inspector for debugging edge functions.[m
+[32m+[m[32minspector_port = 8083[m
+[32m+[m[32m# The Deno major version to use.[m
+[32m+[m[32mdeno_version = 2[m
+[32m+[m
+[32m+[m[32m# [edge_runtime.secrets][m
+[32m+[m[32m# secret_key = "env(SECRET_VALUE)"[m
+[32m+[m
+[32m+[m[32m[analytics][m
+[32m+[m[32menabled = true[m
+[32m+[m[32mport = 54327[m
+[32m+[m[32m# Configure one of the supported backends: `postgres`, `bigquery`.[m
+[32m+[m[32mbackend = "postgres"[m
+[32m+[m
+[32m+[m[32m# Experimental features may be deprecated any time[m
+[32m+[m[32m[experimental][m
+[32m+[m[32m# Configures Postgres storage engine to use OrioleDB (S3)[m
+[32m+[m[32morioledb_version = ""[m
+[32m+[m[32m# Configures S3 bucket URL, eg. <bucket_name>.s3-<region>.amazonaws.com[m
+[32m+[m[32ms3_host = "env(S3_HOST)"[m
+[32m+[m[32m# Configures S3 bucket region, eg. us-east-1[m
+[32m+[m[32ms3_region = "env(S3_REGION)"[m
+[32m+[m[32m# Configures AWS_ACCESS_KEY_ID for S3 bucket[m
+[32m+[m[32ms3_access_key = "env(S3_ACCESS_KEY)"[m
+[32m+[m[32m# Configures AWS_SECRET_ACCESS_KEY for S3 bucket[m
+[32m+[m[32ms3_secret_key = "env(S3_SECRET_KEY)"[m
+[32m+[m
+[32m+[m[32m# pg-delta is the schema diff engine for db diff / db pull / db remote commit.[m
+[32m+[m[32m# Set enabled = false to fall back to the legacy migra engine.[m
+[32m+[m[32m[experimental.pgdelta][m
+[32m+[m[32menabled = true[m
+[32m+[m[32m# Directory under `supabase/` where declarative files are written.[m
+[32m+[m[32m# declarative_schema_path = "./schemas"[m
+[32m+[m[32m# JSON string passed through to pg-delta SQL formatting. When omitted, SQL is[m
+[32m+[m[32m# formatted with uppercase keywords, indent 2, max width 180, trailing commas,[m
+[32m+[m[32m# and column/key alignment. Set to "null" to emit raw, unformatted SQL.[m
+[32m+[m[32m# format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"[m
+[1mdiff --git a/supabase/functions/hospital-login/index.ts b/supabase/functions/hospital-login/index.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..530a181[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/functions/hospital-login/index.ts[m
+[36m@@ -0,0 +1,78 @@[m
+[32m+[m[32mimport { createClient } from "jsr:@supabase/supabase-js@2";[m
+[32m+[m
+[32m+[m[32mconst SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;[m
+[32m+[m[32mconst SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;[m
+[32m+[m[32mconst ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;[m
+[32m+[m
+[32m+[m[32mDeno.serve(async (req) => {[m
+[32m+[m[32m  if (req.method !== "POST") {[m
+[32m+[m[32m    return json({ error: "Method not allowed" }, 405);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  let body: { facility_code?: string; staff_id?: string };[m
+[32m+[m[32m  try {[m
+[32m+[m[32m    body = await req.json();[m
+[32m+[m[32m  } catch {[m
+[32m+[m[32m    return json({ error: "Request body must be JSON." }, 400);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const facilityCode = (body.facility_code ?? "").trim();[m
+[32m+[m[32m  const staffId = (body.staff_id ?? "").trim();[m
+[32m+[m[32m  if (!facilityCode || !staffId) {[m
+[32m+[m[32m    return json({ error: "facility_code and staff_id are both required." }, 400);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // The service-role client bypasses RLS. It is the only place in the app[m
+[32m+[m[32m  // allowed to read hospital_login_secrets.[m
+[32m+[m[32m  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);[m
+[32m+[m
+[32m+[m[32m  const { data: secretRow, error: lookupError } = await adminClient[m
+[32m+[m[32m    .from("hospital_login_secrets")[m
+[32m+[m[32m    .select("secret_password, user_id")[m
+[32m+[m[32m    .eq("facility_code", facilityCode)[m
+[32m+[m[32m    .eq("staff_id", staffId)[m
+[32m+[m[32m    .maybeSingle();[m
+[32m+[m
+[32m+[m[32m  if (lookupError) {[m
+[32m+[m[32m    console.error("hospital-login lookup failed:", lookupError);[m
+[32m+[m[32m    return json({ error: "Something went wrong. Try again." }, 500);[m
+[32m+[m[32m  }[m
+[32m+[m[32m  if (!secretRow) {[m
+[32m+[m[32m    return json({ error: "No account matches that facility code and staff ID." }, 400);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  const { data: userRecord, error: userError } =[m
+[32m+[m[32m    await adminClient.auth.admin.getUserById(secretRow.user_id);[m
+[32m+[m
+[32m+[m[32m  if (userError || !userRecord?.user?.email) {[m
+[32m+[m[32m    console.error("hospital-login: could not resolve user email:", userError);[m
+[32m+[m[32m    return json({ error: "Something went wrong. Try again." }, 500);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Sign in with the anon-key client, the same kind of client the frontend[m
+[32m+[m[32m  // uses, so the returned session behaves like a normal login.[m
+[32m+[m[32m  const anonClient = createClient(SUPABASE_URL, ANON_KEY);[m
+[32m+[m[32m  const { data: signInData, error: signInError } =[m
+[32m+[m[32m    await anonClient.auth.signInWithPassword({[m
+[32m+[m[32m      email: userRecord.user.email,[m
+[32m+[m[32m      password: secretRow.secret_password,[m
+[32m+[m[32m    });[m
+[32m+[m
+[32m+[m[32m  if (signInError || !signInData.session) {[m
+[32m+[m[32m    console.error("hospital-login: sign-in failed:", signInError);[m
+[32m+[m[32m    return json({ error: "Something went wrong. Try again." }, 500);[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  return json({[m
+[32m+[m[32m    access_token: signInData.session.access_token,[m
+[32m+[m[32m    refresh_token: signInData.session.refresh_token,[m
+[32m+[m[32m    user: signInData.user,[m
+[32m+[m[32m  });[m
+[32m+[m[32m});[m
+[32m+[m
+[32m+[m[32mfunction json(body: unknown, status = 200) {[m
+[32m+[m[32m  return new Response(JSON.stringify(body), {[m
+[32m+[m[32m    status,[m
+[32m+[m[32m    headers: { "Content-Type": "application/json" },[m
+[32m+[m[32m  });[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/supabase/migrations/20260908120000_init_schema.sql b/supabase/migrations/20260908120000_init_schema.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..58c49b7[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/migrations/20260908120000_init_schema.sql[m
+[36m@@ -0,0 +1,92 @@[m
+[32m+[m[32m-- profiles: one row per auth.users row, created automatically.[m
+[32m+[m[32mcreate table public.profiles ([m
+[32m+[m[32m  id uuid primary key references auth.users (id) on delete cascade,[m
+[32m+[m[32m  full_name text not null default '',[m
+[32m+[m[32m  role text not null default 'staff'[m
+[32m+[m[32m    check (role in ('administrator', 'pharmacist', 'nurse', 'staff')),[m
+[32m+[m[32m  facility_code text not null default '',[m
+[32m+[m[32m  staff_id text not null default '',[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32m-- Unique facility_code + staff_id pair, only when both are actually set.[m
+[32m+[m[32mcreate unique index profiles_facility_staff_unique[m
+[32m+[m[32m  on public.profiles (facility_code, staff_id)[m
+[32m+[m[32m  where facility_code <> '' and staff_id <> '';[m
+[32m+[m
+[32m+[m[32m-- Auto-create a profile row whenever a new auth user is created.[m
+[32m+[m[32mcreate function public.handle_new_user()[m
+[32m+[m[32mreturns trigger[m
+[32m+[m[32mlanguage plpgsql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mas $$[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  insert into public.profiles (id, full_name)[m
+[32m+[m[32m  values (new.id, coalesce(new.raw_user_meta_data ->> 'full_name', ''));[m
+[32m+[m[32m  return new;[m
+[32m+[m[32mend;[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32mcreate trigger on_auth_user_created[m
+[32m+[m[32m  after insert on auth.users[m
+[32m+[m[32m  for each row execute procedure public.handle_new_user();[m
+[32m+[m
+[32m+[m[32m-- Helper used by the admin policy (avoids a recursion error).[m
+[32m+[m[32mcreate function public.is_admin()[m
+[32m+[m[32mreturns boolean[m
+[32m+[m[32mlanguage sql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mstable[m
+[32m+[m[32mas $$[m
+[32m+[m[32m  select exists ([m
+[32m+[m[32m    select 1 from public.profiles[m
+[32m+[m[32m    where id = auth.uid() and role = 'administrator'[m
+[32m+[m[32m  );[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32m-- Row Level Security[m
+[32m+[m[32malter table public.profiles enable row level security;[m
+[32m+[m
+[32m+[m[32mcreate policy "profiles: read own"[m
+[32m+[m[32m  on public.profiles for select[m
+[32m+[m[32m  using (auth.uid() = id);[m
+[32m+[m
+[32m+[m[32mcreate policy "profiles: update own"[m
+[32m+[m[32m  on public.profiles for update[m
+[32m+[m[32m  using (auth.uid() = id)[m
+[32m+[m[32m  with check (auth.uid() = id);[m
+[32m+[m
+[32m+[m[32mcreate policy "profiles: administrators read all"[m
+[32m+[m[32m  on public.profiles for select[m
+[32m+[m[32m  using (public.is_admin());[m
+[32m+[m
+[32m+[m[32m-- Block role self-escalation.[m
+[32m+[m[32mcreate function public.prevent_role_self_escalation()[m
+[32m+[m[32mreturns trigger[m
+[32m+[m[32mlanguage plpgsql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mas $$[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  if auth.role() <> 'service_role' and new.role is distinct from old.role then[m
+[32m+[m[32m    new.role := old.role;[m
+[32m+[m[32m  end if;[m
+[32m+[m[32m  return new;[m
+[32m+[m[32mend;[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32mcreate trigger profiles_prevent_role_self_escalation[m
+[32m+[m[32m  before update on public.profiles[m
+[32m+[m[32m  for each row execute procedure public.prevent_role_self_escalation();[m
+[32m+[m
+[32m+[m[32m-- hospital_login_secrets: RLS enabled, ZERO policies.[m
+[32m+[m[32mcreate table public.hospital_login_secrets ([m
+[32m+[m[32m  user_id uuid primary key references auth.users (id) on delete cascade,[m
+[32m+[m[32m  facility_code text not null,[m
+[32m+[m[32m  staff_id text not null,[m
+[32m+[m[32m  secret_password text not null[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32malter table public.hospital_login_secrets enable row level security;[m
+[32m+[m[32m-- Newer Supabase projects don't auto-grant access to tables you create.[m
+[32m+[m[32m-- The Edge Function (service_role) needs to read the secrets table.[m
+[32m+[m[32mgrant select on public.hospital_login_secrets to service_role;[m
+\ No newline at end of file[m
+[1mdiff --git a/supabase/migrations/20260922000000_dashboard_schema.sql b/supabase/migrations/20260922000000_dashboard_schema.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a4e0354[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/migrations/20260922000000_dashboard_schema.sql[m
+[36m@@ -0,0 +1,251 @@[m
+[32m+[m[32m-- suppliers[m
+[32m+[m[32mcreate table public.suppliers ([m
+[32m+[m[32m  id uuid primary key default gen_random_uuid(),[m
+[32m+[m[32m  name text not null,[m
+[32m+[m[32m  contact_name text not null default '',[m
+[32m+[m[32m  contact_email text not null default '',[m
+[32m+[m[32m  contact_phone text not null default '',[m
+[32m+[m[32m  status text not null default 'active'[m
+[32m+[m[32m    check (status in ('active', 'inactive')),[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32m-- medicines: quantity_on_hand is kept in sync by a trigger, never edited directly.[m
+[32m+[m[32mcreate table public.medicines ([m
+[32m+[m[32m  id uuid primary key default gen_random_uuid(),[m
+[32m+[m[32m  name text not null,[m
+[32m+[m[32m  sku text not null unique,[m
+[32m+[m[32m  category text not null default '',[m
+[32m+[m[32m  supplier_id uuid references public.suppliers (id) on delete set null,[m
+[32m+[m[32m  unit_price numeric(10, 2) not null default 0 check (unit_price >= 0),[m
+[32m+[m[32m  quantity_on_hand integer not null default 0 check (quantity_on_hand >= 0),[m
+[32m+[m[32m  reorder_point integer not null default 0 check (reorder_point >= 0),[m
+[32m+[m[32m  expiry_date date,[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mcreate index medicines_supplier_id_idx on public.medicines (supplier_id);[m
+[32m+[m[32mcreate index medicines_expiry_date_idx on public.medicines (expiry_date);[m
+[32m+[m
+[32m+[m[32m-- stock_transactions: append-only ledger of every stock change.[m
+[32m+[m[32mcreate table public.stock_transactions ([m
+[32m+[m[32m  id uuid primary key default gen_random_uuid(),[m
+[32m+[m[32m  medicine_id uuid not null references public.medicines (id) on delete cascade,[m
+[32m+[m[32m  type text not null check (type in ('stock_in', 'stock_out', 'return')),[m
+[32m+[m[32m  quantity integer not null check (quantity <> 0),[m
+[32m+[m[32m  status text not null default 'completed'[m
+[32m+[m[32m    check (status in ('completed', 'pending', 'rejected')),[m
+[32m+[m[32m  performed_by uuid references auth.users (id) on delete set null,[m
+[32m+[m[32m  note text not null default '',[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mcreate index stock_transactions_medicine_id_idx on public.stock_transactions (medicine_id);[m
+[32m+[m[32mcreate index stock_transactions_created_at_idx on public.stock_transactions (created_at desc);[m
+[32m+[m
+[32m+[m[32m-- Only a completed transaction moves stock.[m
+[32m+[m[32mcreate function public.apply_stock_transaction()[m
+[32m+[m[32mreturns trigger[m
+[32m+[m[32mlanguage plpgsql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mas $$[m
+[32m+[m[32mdeclare[m
+[32m+[m[32m  delta integer;[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  if new.status <> 'completed' then[m
+[32m+[m[32m    return new;[m
+[32m+[m[32m  end if;[m
+[32m+[m
+[32m+[m[32m  delta := case new.type[m
+[32m+[m[32m    when 'stock_in' then new.quantity[m
+[32m+[m[32m    when 'return' then new.quantity[m
+[32m+[m[32m    when 'stock_out' then -new.quantity[m
+[32m+[m[32m  end;[m
+[32m+[m
+[32m+[m[32m  update public.medicines[m
+[32m+[m[32m  set quantity_on_hand = greatest(0, quantity_on_hand + delta)[m
+[32m+[m[32m  where id = new.medicine_id;[m
+[32m+[m
+[32m+[m[32m  return new;[m
+[32m+[m[32mend;[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32mcreate trigger stock_transactions_apply[m
+[32m+[m[32m  after insert on public.stock_transactions[m
+[32m+[m[32m  for each row execute procedure public.apply_stock_transaction();[m
+[32m+[m
+[32m+[m[32m-- purchase_orders[m
+[32m+[m[32mcreate table public.purchase_orders ([m
+[32m+[m[32m  id uuid primary key default gen_random_uuid(),[m
+[32m+[m[32m  po_number text not null unique,[m
+[32m+[m[32m  supplier_id uuid not null references public.suppliers (id) on delete restrict,[m
+[32m+[m[32m  status text not null default 'pending'[m
+[32m+[m[32m    check (status in ('pending', 'delayed', 'delivered', 'cancelled')),[m
+[32m+[m[32m  expected_date date,[m
+[32m+[m[32m  delivered_at timestamptz,[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mcreate index purchase_orders_supplier_id_idx on public.purchase_orders (supplier_id);[m
+[32m+[m
+[32m+[m[32m-- inventory_snapshots: one row per day. Nothing fills it yet (Section 4 of the guide).[m
+[32m+[m[32mcreate table public.inventory_snapshots ([m
+[32m+[m[32m  snapshot_date date primary key,[m
+[32m+[m[32m  total_units integer not null,[m
+[32m+[m[32m  total_value numeric(12, 2) not null,[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32m-- notifications: feeds the bell and the Urgent Alerts panel.[m
+[32m+[m[32mcreate table public.notifications ([m
+[32m+[m[32m  id uuid primary key default gen_random_uuid(),[m
+[32m+[m[32m  severity text not null check (severity in ('danger', 'warning', 'info', 'success')),[m
+[32m+[m[32m  category text not null default '',[m
+[32m+[m[32m  title text not null,[m
+[32m+[m[32m  body text not null default '',[m
+[32m+[m[32m  action_label text,[m
+[32m+[m[32m  resolved boolean not null default false,[m
+[32m+[m[32m  read_by uuid[] not null default '{}',[m
+[32m+[m[32m  created_at timestamptz not null default now()[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mcreate index notifications_created_at_idx on public.notifications (created_at desc);[m
+[32m+[m[32mcreate index notifications_unresolved_idx on public.notifications (resolved) where resolved = false;[m
+[32m+[m
+[32m+[m[32m-- Row Level Security[m
+[32m+[m[32malter table public.suppliers enable row level security;[m
+[32m+[m[32malter table public.medicines enable row level security;[m
+[32m+[m[32malter table public.stock_transactions enable row level security;[m
+[32m+[m[32malter table public.purchase_orders enable row level security;[m
+[32m+[m[32malter table public.inventory_snapshots enable row level security;[m
+[32m+[m[32malter table public.notifications enable row level security;[m
+[32m+[m
+[32m+[m[32mcreate policy "suppliers: read all" on public.suppliers[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m[32mcreate policy "medicines: read all" on public.medicines[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m[32mcreate policy "stock_transactions: read all" on public.stock_transactions[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m[32mcreate policy "purchase_orders: read all" on public.purchase_orders[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m[32mcreate policy "inventory_snapshots: read all" on public.inventory_snapshots[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m[32mcreate policy "notifications: read all" on public.notifications[m
+[32m+[m[32m  for select using (auth.role() = 'authenticated');[m
+[32m+[m
+[32m+[m[32mcreate policy "suppliers: administrators write" on public.suppliers[m
+[32m+[m[32m  for all using (public.is_admin()) with check (public.is_admin());[m
+[32m+[m[32mcreate policy "medicines: administrators write" on public.medicines[m
+[32m+[m[32m  for all using (public.is_admin()) with check (public.is_admin());[m
+[32m+[m[32mcreate policy "purchase_orders: administrators write" on public.purchase_orders[m
+[32m+[m[32m  for all using (public.is_admin()) with check (public.is_admin());[m
+[32m+[m
+[32m+[m[32mcreate policy "stock_transactions: authenticated insert" on public.stock_transactions[m
+[32m+[m[32m  for insert with check (auth.role() = 'authenticated');[m
+[32m+[m
+[32m+[m[32m-- Low-stock notification: created automatically, resolved once restocked.[m
+[32m+[m[32mcreate function public.notify_low_stock()[m
+[32m+[m[32mreturns trigger[m
+[32m+[m[32mlanguage plpgsql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mas $$[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  if new.quantity_on_hand <= new.reorder_point and[m
+[32m+[m[32m     (old is null or old.quantity_on_hand > old.reorder_point) then[m
+[32m+[m[32m    insert into public.notifications (severity, category, title, body, action_label)[m
+[32m+[m[32m    values ([m
+[32m+[m[32m      'danger', 'Stock',[m
+[32m+[m[32m      'Low Stock: ' || new.name,[m
+[32m+[m[32m      'Current: ' || new.quantity_on_hand || ' units. Reorder point: ' || new.reorder_point || '.',[m
+[32m+[m[32m      'CREATE ORDER'[m
+[32m+[m[32m    );[m
+[32m+[m[32m  elsif new.quantity_on_hand > new.reorder_point then[m
+[32m+[m[32m    update public.notifications[m
+[32m+[m[32m    set resolved = true[m
+[32m+[m[32m    where category = 'Stock'[m
+[32m+[m[32m      and title = 'Low Stock: ' || new.name[m
+[32m+[m[32m      and not resolved;[m
+[32m+[m[32m  end if;[m
+[32m+[m[32m  return new;[m
+[32m+[m[32mend;[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32mcreate trigger medicines_notify_low_stock[m
+[32m+[m[32m  after insert or update of quantity_on_hand on public.medicines[m
+[32m+[m[32m  for each row execute procedure public.notify_low_stock();[m
+[32m+[m
+[32m+[m[32m-- Purchase order notifications (delayed / delivered).[m
+[32m+[m[32mcreate function public.notify_purchase_order_status()[m
+[32m+[m[32mreturns trigger[m
+[32m+[m[32mlanguage plpgsql[m
+[32m+[m[32msecurity definer set search_path = public[m
+[32m+[m[32mas $$[m
+[32m+[m[32mdeclare[m
+[32m+[m[32m  supplier_name text;[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  select name into supplier_name from public.suppliers where id = new.supplier_id;[m
+[32m+[m
+[32m+[m[32m  if new.status = 'delayed' and (old is null or old.status <> 'delayed') then[m
+[32m+[m[32m    insert into public.notifications (severity, category, title, body, action_label)[m
+[32m+[m[32m    values ([m
+[32m+[m[32m      'warning', 'Orders',[m
+[32m+[m[32m      'Supplier Delay: ' || coalesce(supplier_name, 'Unknown supplier'),[m
+[32m+[m[32m      'Shipment for ' || new.po_number || ' is delayed.',[m
+[32m+[m[32m      'CONTACT AGENT'[m
+[32m+[m[32m    );[m
+[32m+[m[32m  elsif new.status = 'delivered' and (old is null or old.status <> 'delivered') then[m
+[32m+[m[32m    insert into public.notifications (severity, category, title, body)[m
+[32m+[m[32m    values ([m
+[32m+[m[32m      'success', 'Orders',[m
+[32m+[m[32m      'Purchase Order Delivered',[m
+[32m+[m[32m      new.po_number || ' from ' || coalesce(supplier_name, 'Unknown supplier') || ' has arrived.'[m
+[32m+[m[32m    );[m
+[32m+[m[32m  end if;[m
+[32m+[m[32m  return new;[m
+[32m+[m[32mend;[m
+[32m+[m[32m$$;[m
+[32m+[m
+[32m+[m[32mcreate trigger purchase_orders_notify_status[m
+[32m+[m[32m  after insert or update of status on public.purchase_orders[m
+[32m+[m[32m  for each row execute procedure public.notify_purchase_order_status();[m
+[32m+[m
+[32m+[m[32m-- Views for the dashboard.[m
+[32m+[m[32mcreate view public.dashboard_kpis[m
+[32m+[m[32mwith (security_invoker = true)[m
+[32m+[m[32mas[m
+[32m+[m[32mselect[m
+[32m+[m[32m  (select count(*) from public.medicines) as total_medicines,[m
+[32m+[m[32m  (select count(*) from public.suppliers where status = 'active') as total_suppliers,[m
+[32m+[m[32m  (select count(*) from public.medicines where quantity_on_hand <= reorder_point) as low_stock,[m
+[32m+[m[32m  (select count(*) from public.medicines[m
+[32m+[m[32m     where expiry_date is not null[m
+[32m+[m[32m       and expiry_date between current_date and current_date + interval '7 days') as expiring_soon,[m
+[32m+[m[32m  (select count(*) from public.medicines[m
+[32m+[m[32m     where expiry_date is not null and expiry_date < current_date) as expired,[m
+[32m+[m[32m  (select coalesce(sum(quantity_on_hand * unit_price), 0) from public.medicines) as total_value;[m
+[32m+[m
+[32m+[m[32mcreate view public.stock_movement_monthly[m
+[32m+[m[32mwith (security_invoker = true)[m
+[32m+[m[32mas[m
+[32m+[m[32mselect[m
+[32m+[m[32m  date_trunc('month', created_at)::date as month,[m
+[32m+[m[32m  coalesce(sum(quantity) filter (where type = 'stock_in'), 0) as stock_in,[m
+[32m+[m[32m  coalesce(sum(quantity) filter (where type = 'stock_out'), 0) as stock_out[m
+[32m+[m[32mfrom public.stock_transactions[m
+[32m+[m[32mwhere status = 'completed'[m
+[32m+[m[32mgroup by 1[m
+[32m+[m[32morder by 1;[m
+[32m+[m
+[32m+[m[32m-- Grants: newer Supabase projects don't auto-grant access to new tables.[m
+[32m+[m[32mgrant select on public.profiles to authenticated;[m
+[32m+[m[32mgrant update on public.profiles to authenticated;[m
+[32m+[m[32mgrant select on[m
+[32m+[m[32m  public.suppliers, public.medicines, public.stock_transactions,[m
+[32m+[m[32m  public.purchase_orders, public.inventory_snapshots, public.notifications[m
+[32m+[m[32m  to authenticated;[m
+[32m+[m[32mgrant insert, update, delete on[m
+[32m+[m[32m  public.suppliers, public.medicines, public.purchase_orders[m
+[32m+[m[32m  to authenticated;[m
+[32m+[m[32mgrant insert on public.stock_transactions to authenticated;[m
+[32m+[m[32mgrant select on public.dashboard_kpis, public.stock_movement_monthly to authenticated;[m
+[32m+[m[32mgrant select, insert, update on public.inventory_snapshots to service_role;[m
+\ No newline at end of file[m
+[1mdiff --git a/supabase/migrations/20260924000000_inventory_snapshot_job.sql b/supabase/migrations/20260924000000_inventory_snapshot_job.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..a3a9706[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/migrations/20260924000000_inventory_snapshot_job.sql[m
+[36m@@ -0,0 +1,17 @@[m
+[32m+[m[32m-- Daily snapshot of total units and value, used by the Inventory Trend chart.[m
+[32m+[m[32mcreate extension if not exists pg_cron;[m
+[32m+[m
+[32m+[m[32mselect cron.schedule([m
+[32m+[m[32m  'daily-inventory-snapshot',[m
+[32m+[m[32m  '55 23 * * *',[m
+[32m+[m[32m  $$[m
+[32m+[m[32m  insert into public.inventory_snapshots (snapshot_date, total_units, total_value)[m
+[32m+[m[32m  select current_date,[m
+[32m+[m[32m         coalesce(sum(quantity_on_hand), 0),[m
+[32m+[m[32m         coalesce(sum(quantity_on_hand * unit_price), 0)[m
+[32m+[m[32m  from public.medicines[m
+[32m+[m[32m  on conflict (snapshot_date) do update[m
+[32m+[m[32m    set total_units = excluded.total_units,[m
+[32m+[m[32m        total_value = excluded.total_value;[m
+[32m+[m[32m  $$[m
+[32m+[m[32m);[m
+\ No newline at end of file[m
+[1mdiff --git a/supabase/seed.sql b/supabase/seed.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..ec3a404[m
+[1m--- /dev/null[m
+[1m+++ b/supabase/seed.sql[m
+[36m@@ -0,0 +1,42 @@[m
+[32m+[m[32mcreate function pg_temp.make_user([m
+[32m+[m[32m  p_email text, p_name text, p_role text,[m
+[32m+[m[32m  p_facility text default '', p_staff text default '', p_password text default 'TestPass123!'[m
+[32m+[m[32m) returns void language plpgsql as $$[m
+[32m+[m[32mdeclare uid uuid := gen_random_uuid();[m
+[32m+[m[32mbegin[m
+[32m+[m[32m  insert into auth.users ([m
+[32m+[m[32m    instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,[m
+[32m+[m[32m    raw_app_meta_data, raw_user_meta_data, created_at, updated_at,[m
+[32m+[m[32m    confirmation_token, recovery_token, email_change, email_change_token_new[m
+[32m+[m[32m  ) values ([m
+[32m+[m[32m    '00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated',[m
+[32m+[m[32m    p_email, extensions.crypt(p_password, extensions.gen_salt('bf')), now(),[m
+[32m+[m[32m    '{"provider":"email","providers":["email"]}',[m
+[32m+[m[32m    jsonb_build_object('full_name', p_name), now(), now(), '', '', '', ''[m
+[32m+[m[32m  );[m
+[32m+[m
+[32m+[m[32m  insert into auth.identities ([m
+[32m+[m[32m    id, user_id, provider_id, identity_data, provider,[m
+[32m+[m[32m    last_sign_in_at, created_at, updated_at[m
+[32m+[m[32m  ) values ([m
+[32m+[m[32m    gen_random_uuid(), uid, uid::text,[m
+[32m+[m[32m    jsonb_build_object('sub', uid::text, 'email', p_email),[m
+[32m+[m[32m    'email', now(), now(), now()[m
+[32m+[m[32m  );[m
+[32m+[m
+[32m+[m[32m  update public.profiles[m
+[32m+[m[32m  set role = p_role, facility_code = p_facility, staff_id = p_staff[m
+[32m+[m[32m  where id = uid;[m
+[32m+[m
+[32m+[m[32m  if p_facility <> '' then[m
+[32m+[m[32m    insert into public.hospital_login_secrets (user_id, facility_code, staff_id, secret_password)[m
+[32m+[m[32m    values (uid, p_facility, p_staff, p_password);[m
+[32m+[m[32m  end if;[m
+[32m+[m[32mend $$;[m
+[32m+[m
+[32m+[m[32mselect pg_temp.make_user('admin@medistock.test', 'Test Admin', 'administrator');[m
+[32m+[m[32mselect pg_temp.make_user('pharmacist@medistock.test', 'Test Pharmacist', 'pharmacist');[m
+[32m+[m[32mselect pg_temp.make_user([m
+[32m+[m[32m  'hospital.wc-gen-014.stf-0001@medistock.test', 'Test Nurse', 'nurse',[m
+[32m+[m[32m  'WC-GEN-014', 'STF-0001', 'local-dev-secret-change-me'[m
+[32m+[m[32m);[m
+\ No newline at end of file[m

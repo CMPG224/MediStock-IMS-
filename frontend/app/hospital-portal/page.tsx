@@ -6,6 +6,7 @@ import AuthLayout from "@/components/AuthLayout";
 import TextField from "@/components/TextField";
 import Button from "@/components/Button";
 import BackToSignIn from "@/components/BackToSignIn";
+import { recordSignIn } from "@/lib/data/users";
 import { supabase } from "@/lib/supabase";
 
 export default function HospitalPortalPage() {
@@ -35,6 +36,7 @@ export default function HospitalPortalPage() {
       access_token: data.access_token,
       refresh_token: data.refresh_token,
     });
+    await recordSignIn();
     router.push("/dashboard");
   }
 
