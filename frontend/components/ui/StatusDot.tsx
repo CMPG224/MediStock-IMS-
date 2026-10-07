@@ -6,8 +6,6 @@ const DOT: Record<string, string> = {
   brand: "bg-brand text-brand",
 };
 
-/** A coloured dot followed by a bold label — the "● In Stock" / "● Active"
- * status treatment used in the Medicine and Supplier tables. */
 export default function StatusDot({ tone, children }: { tone: keyof typeof DOT; children: React.ReactNode }) {
   const [bg, text] = DOT[tone].split(" ");
   return (

@@ -146,11 +146,9 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 type IconProps = {
-  /** The icon's lookup name, e.g. "lock" or "mail" — maps to a Lucide component below. */
+  /** A key of ICONS, e.g. "lock". */
   name: string;
-  /** Pixel size. Defaults to 19. */
   size?: number;
-  /** Tailwind text-colour class, e.g. "text-muted". Defaults to inherited colour. */
   className?: string;
 };
 

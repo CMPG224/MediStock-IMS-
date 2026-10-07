@@ -1,5 +1,3 @@
-/** The title block at the top of every page: h1, one-line description, and
- * an optional cluster of action buttons on the right. */
 export default function PageHeader({
   title,
   description,

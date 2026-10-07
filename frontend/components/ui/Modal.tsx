@@ -3,9 +3,7 @@
 import { useEffect } from "react";
 import Icon from "../Icon";
 
-/** A centred dialog over a dimmed backdrop. Closes on Escape and on a
- * backdrop click. `variant="drawer"` slides in from the right instead (used
- * by the Users page's Edit Roles panel). */
+/** Closes on Escape or a backdrop click; `variant="drawer"` slides in from the right. */
 export default function Modal({
   open,
   onClose,

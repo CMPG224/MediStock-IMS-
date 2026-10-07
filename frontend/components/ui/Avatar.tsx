@@ -1,5 +1,3 @@
-/** The round letter tile used as a row avatar in tables ("A" for Amoxicillin,
- * "B" for BioLogix...). */
 export default function Avatar({ letter, size = 34 }: { letter: string; size?: number }) {
   return (
     <span

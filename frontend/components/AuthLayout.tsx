@@ -2,18 +2,15 @@ import type { ReactNode } from "react";
 import Icon from "./Icon";
 
 type AuthLayoutProps = {
-  /** Icon name (see Icon.tsx) for the badge above the title. */
   icon: string;
   title: string;
   subtitle: ReactNode;
   children: ReactNode;
-  /** Use the green badge instead of blue (for success states). */
+  /** Green badge instead of blue. */
   success?: boolean;
-  /** Smaller heading, used on the secondary auth screens. */
   compact?: boolean;
-  /** Anything below the card — a back link, legal footer, etc. */
   footer?: ReactNode;
-  /** Show the decorative background blobs. Only the main login uses them. */
+  /** Decorative background blobs. */
   decorated?: boolean;
 };
 

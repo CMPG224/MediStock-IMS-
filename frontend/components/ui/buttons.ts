@@ -1,5 +1,3 @@
-// Shared button class strings so every page's primary/secondary actions are
-// pixel-identical to the dashboard's.
 export const BTN_PRIMARY =
   "flex h-[46px] items-center gap-2.5 rounded-full bg-brand px-5 text-[14.5px] font-bold text-white shadow-[0_5px_14px_rgba(11,76,140,.22)] hover:bg-brand-dark";
 export const BTN_OUTLINE =

@@ -8,8 +8,7 @@ const TONES: Record<BadgeTone, string> = {
   neutral: "bg-[#EEF1F6] text-[#4A5C72]",
 };
 
-/** A small rounded status/label pill ("Well Stocked", "Primary", "ADMIN"...).
- * `upper` gives the letter-spaced uppercase treatment used for role badges. */
+/** `upper` gives the letter-spaced uppercase style used for role badges. */
 export default function Badge({
   tone = "neutral",
   upper = false,

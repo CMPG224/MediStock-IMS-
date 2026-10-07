@@ -5,19 +5,16 @@ import Icon from "./Icon";
 
 type TextFieldProps = {
   label: string;
-  /** Icon name (see Icon.tsx) shown inside the box, e.g. "mail". */
   icon: string;
   value: string;
   onChange: (value: string) => void;
   type?: "text" | "email" | "password";
   placeholder?: string;
-  /** Marks the field required, both visually and for screen readers. */
   required?: boolean;
-  /** Error text. When present it is announced and the field is flagged. */
   error?: string;
-  /** Extra content on the right of the label row, e.g. a "Forgot?" link. */
+  /** Right side of the label row, e.g. a "Forgot?" link. */
   labelAction?: ReactNode;
-  /** Extra control inside the box on the right, e.g. a show/hide button. */
+  /** Right side of the input box, e.g. a show/hide button. */
   trailing?: ReactNode;
   autoComplete?: string;
 };
