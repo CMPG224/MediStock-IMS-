@@ -8,10 +8,6 @@ import LineChart from "@/components/charts/LineChart";
 import StockMovementChart from "@/components/charts/StockMovementChart";
 import { KPIS, TRANSACTIONS } from "@/lib/mock-data";
 
-// No "use client": this page only reads mock data and lays it out. The
-// pieces that need the browser (the trend chart's range toggle, the alert
-// dismissals, the header dropdowns) are their own Client Components.
-
 const PANEL = "rounded-[14px] border border-border-soft bg-white shadow-[0_2px_10px_rgba(16,35,64,.04)]";
 
 const QTY_COLOR = { success: "text-success", danger: "text-danger", neutral: "text-ink" } as const;
@@ -45,9 +41,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* One panel, six cells. The 1px gap over a border-coloured
-            background draws the dividers, and it wraps cleanly at every
-            column count (2 / 3 / 6) without orphaned borders. */}
+        {/* gap-px over a border-coloured background draws the dividers. */}
         <dl
           className={`${PANEL} grid grid-cols-2 gap-px overflow-hidden bg-border-soft sm:grid-cols-3 xl:grid-cols-6`}
         >

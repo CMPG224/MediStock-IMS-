@@ -7,36 +7,29 @@ import AuthLayout from "@/components/AuthLayout";
 import TextField from "@/components/TextField";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
+import { supabase } from "@/lib/supabase";
 
-// This file is the route "/" — in the App Router, a folder's page.tsx IS the
-// page at that folder's path. app/page.tsx (this file) is the root "/";
-// app/hospital-portal/page.tsx is "/hospital-portal", and so on. There is no
-// separate routes file to register a path in — the file's location on disk
-// is the route. This is the single biggest difference from the react-router
-// version of this app: routes are folders, not <Route> elements.
 export default function LoginPage() {
-  // --- State -------------------------------------------------------------
-  // useState gives a component memory. Each call returns the current value
-  // and a function to change it. Changing it re-renders the component.
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [remember, setRemember] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-
-  // useRouter (from next/navigation) gives us a function to move to another
-  // route in code, as opposed to <Link> which the user clicks.
   const router = useRouter();
 
-  // --- Actions -------------------------------------------------------------
-  function handleSignIn() {
-    // Validate before doing anything. Never let an empty form through.
+  async function handleSignIn() {
     if (!email.trim() || !password.trim()) {
       setError("Enter your work email and password.");
       return;
     }
     setError("");
-    // A real app would call the server here. For now, go to the dashboard.
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInError) {
+      // Generic message: don't reveal which part was wrong.
+      setError("Incorrect email or password.");
+      return;
+    }
     router.push("/dashboard");
   }
 
@@ -79,8 +72,6 @@ export default function LoginPage() {
       <TextField
         label="PASSWORD"
         icon="lock"
-        // Swapping the type between "password" and "text" is the whole
-        // show/hide feature. The value never changes, only how it renders.
         type={showPassword ? "text" : "password"}
         autoComplete="current-password"
         placeholder="••••••••"
@@ -97,11 +88,7 @@ export default function LoginPage() {
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="flex cursor-pointer border-none bg-transparent p-1 text-muted hover:text-brand"
-            // The button has no text, only a hidden icon, so without
-            // aria-label a screen reader announces "button" and nothing else.
             aria-label={showPassword ? "Hide password" : "Show password"}
-            // aria-pressed turns it into a toggle: assistive tech reports
-            // whether it is currently on or off.
             aria-pressed={showPassword}
           >
             <Icon name={showPassword ? "visibility_off" : "visibility"} />
@@ -109,8 +96,6 @@ export default function LoginPage() {
         }
       />
 
-      {/* Wrapping the checkbox in its own <label> means the text is clickable
-          and is read as the checkbox's name. No htmlFor needed this way. */}
       <label className="flex cursor-pointer items-center gap-3 text-[12.5px] font-semibold text-[#344054]">
         <input
           type="checkbox"
@@ -131,8 +116,6 @@ export default function LoginPage() {
         Sign In <Icon name="arrow_forward" />
       </Button>
 
-      {/* The divider: a line, a label, a line. The lines are plain empty
-          divs with flex-1, so they share the remaining space evenly. */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border-soft" />
         <span className="text-[10.5px] font-bold tracking-[.1em] text-muted">
