@@ -1,3 +1,75 @@
+declare module "lucide-react" {
+  export type LucideIcon = any;
+  export const AlertTriangle: any;
+  export const ArrowLeftRight: any;
+  export const ArrowRight: any;
+  export const ArrowUpRight: any;
+  export const AtSign: any;
+  export const Ban: any;
+  export const BarChart3: any;
+  export const Barcode: any;
+  export const Bell: any;
+  export const Bot: any;
+  export const Building2: any;
+  export const Calendar: any;
+  export const CalendarX: any;
+  export const Check: any;
+  export const CheckCircle2: any;
+  export const ChevronDown: any;
+  export const ChevronLeft: any;
+  export const ChevronRight: any;
+  export const CircleAlert: any;
+  export const CircleMinus: any;
+  export const CirclePlus: any;
+  export const ClipboardClock: any;
+  export const ClipboardList: any;
+  export const Clock: any;
+  export const DollarSign: any;
+  export const EllipsisVertical: any;
+  export const Eye: any;
+  export const EyeOff: any;
+  export const ExternalLink: any;
+  export const FileText: any;
+  export const HelpCircle: any;
+  export const History: any;
+  export const IdCard: any;
+  export const Info: any;
+  export const KeyRound: any;
+  export const LayoutDashboard: any;
+  export const Lock: any;
+  export const LogOut: any;
+  export const Mail: any;
+  export const MailCheck: any;
+  export const MapPin: any;
+  export const Package: any;
+  export const Pencil: any;
+  export const Pill: any;
+  export const Plus: any;
+  export const Receipt: any;
+  export const ScanLine: any;
+  export const Search: any;
+  export const Settings: any;
+  export const Shield: any;
+  export const ShieldCheck: any;
+  export const ShoppingCart: any;
+  export const SlidersHorizontal: any;
+  export const Smartphone: any;
+  export const Star: any;
+  export const Stethoscope: any;
+  export const Thermometer: any;
+  export const Trash2: any;
+  export const TrendingDown: any;
+  export const TrendingUp: any;
+  export const Truck: any;
+  export const Upload: any;
+  export const User: any;
+  export const UserCog: any;
+  export const UserPlus: any;
+  export const UserX: any;
+  export const Users: any;
+  export const X: any;
+}
+
 import {
   AlertTriangle,
   ArrowLeftRight,
