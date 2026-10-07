@@ -5,6 +5,7 @@ import AuthLayout from "../../components/AuthLayout";
 import TextField from "../../components/TextField";
 import Button from "../../components/Button";
 import BackToSignIn from "./BackToSignIn";
+import { supabase } from "../../lib/supabase";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
@@ -13,10 +14,10 @@ export default function ForgotPasswordPage() {
     // One page, two views. ‘sent‘decides which one renders.
     const [sent, setSent] =useState(false);
 
-    function handleSend() {
+        async function handleSend() {
         // A very light email check: something, then @, then something, a dot,
-        // then something.Enough to catch typos; the server does the real check.
-        const looksLikeEmail = /^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(email.trim());
+        // then something. Enough to catch typos; the server does the real check.
+        const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
         if (!looksLikeEmail) {
             setError("Enter a valid work email address.");
@@ -24,6 +25,14 @@ export default function ForgotPasswordPage() {
         }
 
         setError("");
+
+        // Supabase always returns success here regardless of whether the email
+        // is registered -- this response shouldn't be usable to find out who
+        // has an account.
+        await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "http://localhost:3000/reset-password",
+        });
+
         setSent(true);
     }
 
