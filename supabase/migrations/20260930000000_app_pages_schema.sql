@@ -53,7 +53,7 @@ begin
 end;
 $$;
 
-create function public.is_admin()
+create or replace function public.is_admin()
 returns boolean
 language sql
 stable
