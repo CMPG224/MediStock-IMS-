@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import PdfViewer from "@/components/pdf/PdfViewer";
 import Modal from "@/components/ui/Modal";
 import { BTN_SMALL_OUTLINE, TD, TH } from "@/components/ui/buttons";
 import type { PurchaseOrder } from "@/lib/data/orders";
+import { buildOrderPdf, downloadBlob } from "@/lib/pdf/generate";
 import { STATUS_LABEL, formatRand, longDay } from "./utils";
 
 export default function OrderDetailModal({
@@ -19,6 +22,9 @@ export default function OrderDetailModal({
   onReorder: (po: PurchaseOrder) => void;
 }) {
   const po = order;
+  const [preview, setPreview] = useState<{ order: PurchaseOrder; blob: Blob } | null>(null);
+  const pdf = po && preview?.order === po ? preview.blob : null;
+  const showPdf = async () => po && setPreview({ order: po, blob: await buildOrderPdf(po) });
   return (
     <Modal
       open={po !== null}
@@ -29,6 +35,16 @@ export default function OrderDetailModal({
         po && (
           <div className="flex flex-wrap justify-end gap-3">
             <button type="button" onClick={onClose} className={BTN_SMALL_OUTLINE}>Close</button>
+            <button type="button" onClick={() => (pdf ? setPreview(null) : void showPdf())} className={BTN_SMALL_OUTLINE}>
+              {pdf ? "Hide PDF" : "Preview PDF"}
+            </button>
+            <button
+              type="button"
+              onClick={async () => downloadBlob(pdf ?? (await buildOrderPdf(po)), `${po.number.replace("#", "")}.pdf`)}
+              className={BTN_SMALL_OUTLINE}
+            >
+              Download PDF
+            </button>
             {po.status === "pending" && (
               <>
                 <button type="button" onClick={() => onCancel(po)} className={BTN_SMALL_OUTLINE}>Cancel order</button>
@@ -46,7 +62,8 @@ export default function OrderDetailModal({
         )
       }
     >
-      {po && (
+      {po && pdf && <PdfViewer blob={pdf} />}
+      {po && !pdf && (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[420px] border-collapse text-left text-[14px]">
             <thead className="bg-[#F3F6FB]">
