@@ -93,13 +93,21 @@ supabase db reset
 the normal way to pick up schema changes in local dev, not something
 destructive to be nervous about before real data exists.)
 
-You should now have three test accounts — same credentials as before:
+### Test accounts
 
-| Login method | Credentials |
-| --- | --- |
-| Email/password | `admin@medistock.test` / `TestPass123!` |
-| Email/password | `pharmacist@medistock.test` / `TestPass123!` |
-| Hospital Portal | `facility_code=WC-GEN-014`, `staff_id=STF-0001` |
+`seed.sql` only runs locally. On the hosted project, run
+[`test-accounts.sql`](test-accounts.sql) once in Dashboard → SQL Editor (after
+the migrations); it's safe to re-run.
+
+| Login method | Credentials | Role |
+| --- | --- | --- |
+| Email/password | `admin@medistock.test` / `TestPass123!` | administrator |
+| Email/password | `pharmacist@medistock.test` / `TestPass123!` | pharmacist |
+| Email/password | `manager@medistock.test` / `TestPass123!` | manager |
+| Email/password | `nurse@medistock.test` / `TestPass123!` | nurse |
+| Email/password | `staff@medistock.test` / `TestPass123!` | staff |
+| Email/password | `invited@medistock.test` / `TestPass123!` | pharmacist, inactive ("pending" on the Users page) |
+| Hospital Portal | `facility_code=WC-GEN-014`, `staff_id=STF-0001` | staff |
 
 `seed.sql` also now inserts a small set of dashboard rows — 2 suppliers, 4
 medicines, a handful of stock transactions and purchase orders — echoing
