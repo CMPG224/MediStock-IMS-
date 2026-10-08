@@ -27,10 +27,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-<<<<<<< HEAD
 // Lets the browser call this function from the frontend's origin.
-=======
->>>>>>> b07ae13361b1bac7b077044846b05dd038b3cece
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -38,10 +35,7 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req) => {
-<<<<<<< HEAD
   // CORS preflight.
-=======
->>>>>>> b07ae13361b1bac7b077044846b05dd038b3cece
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
