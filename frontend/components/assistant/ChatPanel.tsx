@@ -20,7 +20,9 @@ export default function ChatPanel() {
   const [error, setError] = useState("");
   const end = useRef<HTMLDivElement>(null);
 
-  useEffect(() => end.current?.scrollIntoView({ block: "end" }), [messages, busy]);
+  useEffect(() => {
+    end.current?.scrollIntoView({ block: "end" });
+  }, [messages, busy]);
 
   async function send(text: string) {
     const q = text.trim();
