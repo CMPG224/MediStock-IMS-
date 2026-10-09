@@ -33,7 +33,7 @@ export default function LegalPage({
         ))}
 
         <nav aria-label="Legal pages" className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 pt-6 text-sm">
-          <Link href="/" className="font-semibold text-brand hover:underline">Back to sign in</Link>
+          <Link href="/login" className="font-semibold text-brand hover:underline">Back to sign in</Link>
           <Link href="/legal/privacy" className="text-slate-500 hover:underline">Privacy Policy</Link>
           <Link href="/legal/terms" className="text-slate-500 hover:underline">Terms of Service</Link>
           <Link href="/legal/support" className="text-slate-500 hover:underline">Technical Support</Link>

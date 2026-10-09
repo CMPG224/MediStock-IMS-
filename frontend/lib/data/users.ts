@@ -149,7 +149,7 @@ export function setUserRole(id: string, role: UserRole, permissions: Permission[
 /** Sends an invite email via the invite-user Edge Function (administrators only). */
 export async function inviteUser(input: { fullName: string; email: string; role: UserRole }) {
   const { data, error } = await supabase.functions.invoke("invite-user", {
-    body: { full_name: input.fullName, email: input.email, role: input.role, redirect_to: `${window.location.origin}/` },
+    body: { full_name: input.fullName, email: input.email, role: input.role, redirect_to: `${window.location.origin}/login` },
   });
   if (error) {
     const body = await (error as { context?: Response }).context?.json?.().catch(() => null);

@@ -30,7 +30,7 @@ export default function ProfileProvider({ userId, children }: { userId: string; 
   const deactivated = data?.isActive === false;
   useEffect(() => {
     if (!deactivated) return;
-    void supabase.auth.signOut().then(() => router.replace("/"));
+    void supabase.auth.signOut().then(() => router.replace("/login"));
   }, [deactivated, router]);
   if (deactivated) return null;
   return <Ctx.Provider value={{ profile: data, reload }}>{children}</Ctx.Provider>;

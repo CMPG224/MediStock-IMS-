@@ -78,7 +78,7 @@ export default function UserMenu() {
           <button
             type="button"
             role="menuitem"
-            // useRequireAuth redirects to "/" once the session is gone.
+            // useRequireAuth redirects to "/login" once the session is gone.
             onClick={() => supabase.auth.signOut()}
             className="flex h-[42px] w-full items-center gap-[11px] border-t border-border-soft px-4 text-left text-[13.5px] font-semibold text-danger hover:bg-danger-bg"
           >

@@ -6,7 +6,7 @@ import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
 /**
- * Client-side route guard: sends signed-out visitors to "/" and returns the
+ * Client-side route guard: sends signed-out visitors to "/login" and returns the
  * current user. Stopgap — a server-side check (@supabase/ssr + middleware)
  * is the follow-up.
  */
@@ -23,7 +23,7 @@ export function useRequireAuth() {
       .then(({ data }) => {
         if (!active) return;
         if (!data.session) {
-          router.replace("/");
+          router.replace("/login");
           return;
         }
         setUser(data.session.user);
@@ -31,12 +31,12 @@ export function useRequireAuth() {
       })
       .catch(() => {
         // Treat a failed lookup as signed out.
-        if (active) router.replace("/");
+        if (active) router.replace("/login");
       });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
-        router.replace("/");
+        router.replace("/login");
       } else {
         setUser(session.user);
       }

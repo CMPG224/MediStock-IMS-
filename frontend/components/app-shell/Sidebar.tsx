@@ -83,7 +83,7 @@ export default function Sidebar() {
         </button>
         <button
           type="button"
-          // useRequireAuth redirects to "/" once the session is gone.
+          // useRequireAuth redirects to "/login" once the session is gone.
           onClick={() => supabase.auth.signOut()}
           className={`flex h-11 w-full items-center gap-[13px] rounded-full text-[14.5px] font-semibold text-[#243B55] hover:bg-brand-tint ${
             collapsed ? "justify-center" : "px-4"

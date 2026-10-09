@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // standalone Vite prototype the landing page was ported from
+    "landingPage/**",
   ]),
 ]);
 
