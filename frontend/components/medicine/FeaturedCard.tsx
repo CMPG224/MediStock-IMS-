@@ -14,14 +14,16 @@ export default function FeaturedCard({
   category,
   stock,
   status,
+  onOpen,
 }: {
   name: string;
   category: string;
   stock: number;
   status: string;
+  onOpen?: () => void;
 }) {
   return (
-    <article className="flex flex-col rounded-[14px] border border-border-soft bg-white p-5 shadow-[0_2px_10px_rgba(16,35,64,.04)]">
+    <article onClick={onOpen} className={`flex flex-col ${onOpen ? "cursor-pointer hover:border-brand/30" : ""} rounded-[14px] border border-border-soft bg-white p-5 shadow-[0_2px_10px_rgba(16,35,64,.04)]`}>
       <div className="flex items-start justify-between">
         <span aria-hidden="true" className={`flex h-12 w-12 items-center justify-center rounded-xl ${TILE[status]}`}>
           <Icon name="medication" size={22} />

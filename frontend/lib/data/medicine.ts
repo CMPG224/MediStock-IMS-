@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { must, pageRange, searchTerm } from "./query";
+import { must, mustAffect, pageRange, searchTerm } from "./query";
 import { recordTransaction } from "./transactions";
 
 export type MedicineStatus = "In Stock" | "Low Stock" | "Expiring Soon" | "Expired";
@@ -151,4 +151,76 @@ export async function createMedicine(m: NewMedicine) {
   if (m.quantity > 0) {
     await recordTransaction({ medicineId: id, type: "in", quantity: m.quantity, batch: m.batchNo, note: "Opening stock." });
   }
+}
+
+export type MedicineDetail = {
+  id: string;
+  name: string;
+  genericName: string;
+  category: string;
+  batchNo: string;
+  storageLocation: string;
+  expiry: string;
+  stock: number;
+  reorderAt: number;
+  unitCost: number;
+};
+
+type DetailRow = {
+  id: string;
+  name: string;
+  generic_name: string;
+  category: string;
+  batch_number: string | null;
+  storage_location: string | null;
+  expiry_date: string | null;
+  quantity_on_hand: number;
+  reorder_point: number;
+  unit_price: number;
+};
+
+export async function fetchMedicineDetail(id: string): Promise<MedicineDetail> {
+  const r = must(
+    await supabase
+      .from("medicines")
+      .select("id, name, generic_name, category, batch_number, storage_location, expiry_date, quantity_on_hand, reorder_point, unit_price")
+      .eq("id", id)
+      .single(),
+  ) as DetailRow;
+  return {
+    id: r.id,
+    name: r.name,
+    genericName: r.generic_name ?? "",
+    category: r.category,
+    batchNo: r.batch_number ?? "",
+    storageLocation: r.storage_location ?? "",
+    expiry: r.expiry_date ?? "",
+    stock: r.quantity_on_hand,
+    reorderAt: r.reorder_point,
+    unitCost: Number(r.unit_price),
+  };
+}
+
+/** Catalogue edits are administrator-only (RLS); stock is changed through transactions, not here. */
+export async function updateMedicine(id: string, m: Omit<MedicineDetail, "id" | "stock">) {
+  mustAffect(
+    await supabase
+      .from("medicines")
+      .update({
+        name: m.name,
+        generic_name: m.genericName,
+        category: m.category,
+        batch_number: m.batchNo || null,
+        storage_location: m.storageLocation,
+        expiry_date: m.expiry || null,
+        reorder_point: m.reorderAt,
+        unit_price: m.unitCost,
+      })
+      .eq("id", id)
+      .select("id"),
+  );
+}
+
+export async function deleteMedicine(id: string) {
+  mustAffect(await supabase.from("medicines").delete().eq("id", id).select("id"));
 }

@@ -17,6 +17,7 @@ import AddCard from "./AddCard";
 import AddMedicineModal from "./AddMedicineModal";
 import FeaturedCard from "./FeaturedCard";
 import FilterMenu from "./FilterMenu";
+import MedicineDetailModal from "./MedicineDetailModal";
 
 const FILTERS = ["All", "In Stock", "Low Stock", "Expiring Soon"] as const satisfies readonly MedicineFilter[];
 type Filter = (typeof FILTERS)[number];
@@ -31,6 +32,7 @@ export default function MedicineView() {
   const [filter, setFilter] = useState<Filter>("All");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
   const q = useSearchQuery();
   const list = useAsync(() => fetchMedicines(filter, page, q), [filter, page, q]);
   const featured = useAsync(fetchFeaturedMedicines, []);
@@ -70,7 +72,7 @@ export default function MedicineView() {
 
       <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 xl:grid-cols-4">
         {(featured.data ?? []).map((m) => (
-          <FeaturedCard key={m.id} {...m} />
+          <FeaturedCard key={m.id} {...m} onOpen={() => setSelected(m.id)} />
         ))}
         <AddCard label="Add New Medicine" onClick={() => setOpen(true)} />
       </div>
@@ -91,14 +93,19 @@ export default function MedicineView() {
             </thead>
             <tbody>
               {rows.map((m) => (
-                <tr key={m.id} className="border-b border-border-soft last:border-b-0">
+                <tr key={m.id} onClick={() => setSelected(m.id)} className="cursor-pointer border-b border-border-soft last:border-b-0 hover:bg-page">
                   <td className={TD}>
                     <div className="flex items-center gap-3">
                       <Avatar letter={m.name[0].toUpperCase()} />
-                      <div className="flex flex-col">
+                      <button
+                        type="button"
+                        onClick={() => setSelected(m.id)}
+                        aria-label={`View ${m.name}`}
+                        className="flex flex-col text-left hover:underline"
+                      >
                         <span className="font-bold text-ink">{m.name}</span>
                         <span className="text-[12px] text-muted">{m.category}</span>
-                      </div>
+                      </button>
                     </div>
                   </td>
                   <td className={`${TD} text-body`}>{m.batchNo}</td>
@@ -134,6 +141,7 @@ export default function MedicineView() {
         </div>
       </section>
 
+      <MedicineDetailModal medicineId={selected} onClose={() => setSelected(null)} onChanged={refresh} />
       <AddMedicineModal open={open} onClose={() => setOpen(false)} onCreated={refresh} />
     </>
   );

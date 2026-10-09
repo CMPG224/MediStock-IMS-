@@ -28,6 +28,7 @@ export function mustAffect<T>(res: { data: T[] | null; error: PostgrestError | n
 function friendly(e: PostgrestError): string {
   if (e.code === "42501") return "You don't have permission to do that.";
   if (e.code === "23505") return "A record with those details already exists.";
+  if (e.code === "23503") return "This record is referenced by other data (for example purchase orders) and cannot be deleted.";
   if (e.code === "23514") return "Some values aren't allowed. Check the form and try again.";
   return e.message;
 }
