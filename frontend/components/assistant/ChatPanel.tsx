@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import { CARD } from "@/components/ui/buttons";
 import { askAssistant, type ChatMessage } from "@/lib/ai/client";
 import { errorMessage } from "@/lib/useAsync";
+import Markdown from "./Markdown";
 
 const SUGGESTIONS = [
   "Which medicines are low on stock?",
@@ -65,11 +66,11 @@ export default function ChatPanel() {
         {messages.map((m, i) => (
           <div
             key={i}
-            className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-[14px] leading-relaxed ${
-              m.role === "user" ? "self-end bg-brand text-white" : "self-start bg-brand-tint text-ink"
+            className={`rounded-2xl px-4 py-3 text-[14px] leading-relaxed ${
+              m.role === "user" ? "max-w-[85%] self-end whitespace-pre-wrap bg-brand text-white" : "max-w-full self-start bg-brand-tint text-ink"
             }`}
           >
-            {m.content}
+            {m.role === "user" ? m.content : <Markdown>{m.content}</Markdown>}
           </div>
         ))}
         {busy && <div className="self-start text-[13px] text-muted">Thinking…</div>}
