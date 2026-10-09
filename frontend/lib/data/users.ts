@@ -82,7 +82,7 @@ export async function enforceActiveAccount(): Promise<boolean> {
   return allowed;
 }
 
-export const DEACTIVATED_MESSAGE = "This account has been deactivated. Contact your administrator.";
+export const DEACTIVATED_MESSAGE = "Your account has been deactivated.";
 
 /** Stamps last_login_at and writes the "User signed in" log line. */
 export async function recordSignIn() {

@@ -1,6 +1,7 @@
 import Header from "@/components/app-shell/Header";
 import Icon from "@/components/Icon";
 import ExportPdfButton from "@/components/reports/ExportPdfButton";
+import ReportGenerator from "@/components/reports/ReportGenerator";
 import AvailableReports from "@/components/reports/AvailableReports";
 import InventoryValue from "@/components/reports/InventoryValue";
 import MonthlyExpenditure from "@/components/reports/MonthlyExpenditure";
@@ -40,6 +41,7 @@ export default function ReportsPage() {
           <StockTurnover />
         </div>
         <AvailableReports />
+        <ReportGenerator />
       </div>
       <AppFooter />
     </>

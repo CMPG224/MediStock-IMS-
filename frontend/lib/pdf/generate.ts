@@ -79,3 +79,21 @@ export async function buildReportPdf(d: ReportPdfData): Promise<Blob> {
 
   return doc.output("blob");
 }
+
+/** A generated report (title, covered period, table) as a PDF. */
+export async function buildTableReportPdf(r: { title: string; subtitle: string; head: string[]; rows: (string | number)[][]; numeric: number[] }): Promise<Blob> {
+  const [{ jsPDF }, { default: autoTable }] = await Promise.all([import("jspdf"), import("jspdf-autotable")]);
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  doc.setFontSize(20).text("MediStock IMS", 40, 50);
+  doc.setFontSize(14).text(r.title, 40, 76);
+  doc.setFontSize(10).setTextColor(90);
+  doc.text(r.subtitle, 40, 94).text(`Generated ${formatDate(new Date().toISOString())}`, 40, 108).setTextColor(0);
+  autoTable(doc, {
+    startY: 124,
+    head: [r.head],
+    body: r.rows,
+    headStyles: { fillColor: [31, 78, 140] },
+    columnStyles: Object.fromEntries(r.numeric.map((i) => [i, { halign: "right" as const }])),
+  });
+  return doc.output("blob");
+}

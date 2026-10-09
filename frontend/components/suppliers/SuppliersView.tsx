@@ -12,7 +12,7 @@ import StatusDot from "@/components/ui/StatusDot";
 import { BTN_PRIMARY, CARD, TD, TH } from "@/components/ui/buttons";
 import { formatDate } from "@/lib/format";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
-import { fetchFeaturedSuppliers, fetchSuppliers } from "@/lib/data/suppliers";
+import { fetchFeaturedSuppliers, fetchSuppliers, type Supplier } from "@/lib/data/suppliers";
 import { useSearchQuery } from "@/lib/useSearchQuery";
 import { useAsync } from "@/lib/useAsync";
 import AddSupplierModal from "./AddSupplierModal";
@@ -25,6 +25,7 @@ export default function SuppliersView() {
   const [filter, setFilter] = useState<Filter>("All");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Supplier | null>(null);
   const q = useSearchQuery();
   const list = useAsync(() => fetchSuppliers(filter, page, q), [filter, page, q]);
   const featured = useAsync(fetchFeaturedSuppliers, []);
@@ -90,10 +91,15 @@ export default function SuppliersView() {
                   <td className={TD}>
                     <div className="flex items-center gap-3">
                       <Avatar letter={s.name[0].toUpperCase()} />
-                      <div className="flex flex-col">
+                      <button
+                        type="button"
+                        onClick={() => setEditing(s)}
+                        aria-label={`Edit ${s.name}`}
+                        className="flex flex-col text-left hover:underline"
+                      >
                         <span className="font-bold text-ink">{s.name}</span>
                         <span className="text-[12px] text-muted">{s.type}</span>
-                      </div>
+                      </button>
                     </div>
                   </td>
                   <td className={`${TD} text-body`}>{s.contact}</td>
@@ -127,7 +133,8 @@ export default function SuppliersView() {
         </div>
       </section>
 
-      <AddSupplierModal open={open} onClose={() => setOpen(false)} onCreated={refresh} />
+      <AddSupplierModal key="new" open={open} onClose={() => setOpen(false)} onCreated={refresh} />
+      <AddSupplierModal key={editing?.id ?? "none"} open={!!editing} supplier={editing} onClose={() => setEditing(null)} onCreated={refresh} />
     </>
   );
 }

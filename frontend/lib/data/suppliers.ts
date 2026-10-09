@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { isoDay } from "@/lib/format";
-import { must, pageRange, searchTerm } from "./query";
+import { must, mustAffect, pageRange, searchTerm } from "./query";
 
 export type SupplierStatus = "Active" | "Inactive";
 export type SupplierFilter = "All" | SupplierStatus;
@@ -94,5 +94,26 @@ export async function createSupplier(s: { name: string; type: string; contact: s
       contact_phone: s.phone,
       status: s.status.toLowerCase(),
     }),
+  );
+}
+
+/** Administrator-only (RLS): anyone else matches zero rows and gets a permission error. */
+export async function updateSupplier(
+  id: string,
+  s: { name: string; type: string; contact: string; email: string; phone: string; status: SupplierStatus },
+) {
+  mustAffect(
+    await supabase
+      .from("suppliers")
+      .update({
+        name: s.name,
+        supplier_type: s.type,
+        contact_name: s.contact,
+        contact_email: s.email,
+        contact_phone: s.phone,
+        status: s.status.toLowerCase(),
+      })
+      .eq("id", id)
+      .select("id"),
   );
 }
