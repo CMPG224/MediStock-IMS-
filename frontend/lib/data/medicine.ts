@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { must, pageRange } from "./query";
+import { must, pageRange, searchTerm } from "./query";
 import { recordTransaction } from "./transactions";
 
 export type MedicineStatus = "In Stock" | "Low Stock" | "Expiring Soon" | "Expired";
@@ -61,10 +61,12 @@ const FILTER_STATUSES: Record<Exclude<MedicineFilter, "All">, string[]> = {
 
 const COLUMNS = "id, name, category, batch_number, quantity_on_hand, reorder_point, expiry_date, days_to_expiry, stock_status";
 
-export async function fetchMedicines(filter: MedicineFilter, page: number): Promise<{ rows: Medicine[]; total: number }> {
+export async function fetchMedicines(filter: MedicineFilter, page: number, query = ""): Promise<{ rows: Medicine[]; total: number }> {
   const [from, to] = pageRange(page);
   let q = supabase.from("medicine_inventory").select(COLUMNS, { count: "exact" }).order("name");
   if (filter !== "All") q = q.in("stock_status", FILTER_STATUSES[filter]);
+  const term = searchTerm(query);
+  if (term) q = q.or(["name", "category", "batch_number"].map((c) => `${c}.ilike.*${term}*`).join(","));
   const { data, error, count } = await q.range(from, to);
   const rows = must({ data, error }) as InventoryRow[];
   return {

@@ -11,6 +11,7 @@ import { BTN_PRIMARY, CARD, TD, TH } from "@/components/ui/buttons";
 import { formatDate } from "@/lib/format";
 import { fetchFeaturedMedicines, fetchMedicines, type MedicineFilter, type MedicineStatus } from "@/lib/data/medicine";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { useAsync } from "@/lib/useAsync";
 import AddCard from "./AddCard";
 import AddMedicineModal from "./AddMedicineModal";
@@ -30,7 +31,8 @@ export default function MedicineView() {
   const [filter, setFilter] = useState<Filter>("All");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const list = useAsync(() => fetchMedicines(filter, page), [filter, page]);
+  const q = useSearchQuery();
+  const list = useAsync(() => fetchMedicines(filter, page, q), [filter, page, q]);
   const featured = useAsync(fetchFeaturedMedicines, []);
 
   const rows = list.data?.rows ?? [];

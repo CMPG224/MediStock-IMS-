@@ -38,6 +38,15 @@ export const ACCENTS: { name: string; value: string }[] = [
   { name: "Orange", value: "#C2620A" },
 ];
 
+/** Applies theme and accent to the document; safe to call repeatedly. */
+export function applyAppearance({ theme, accent }: Pick<SettingsState, "theme" | "accent">) {
+  const root = document.documentElement;
+  const dark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  root.dataset.theme = dark ? "dark" : "light";
+  root.style.setProperty("--color-brand", accent);
+  root.style.setProperty("--color-brand-dark", `color-mix(in srgb, ${accent} 80%, black)`);
+}
+
 const COLUMN: Record<keyof SettingsState, string> = {
   emailAlerts: "email_alerts",
   lowStockAlerts: "low_stock_alerts",

@@ -12,6 +12,7 @@ import Toggle from "@/components/ui/Toggle";
 import { initial } from "@/lib/format";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
 import { ROLE_LABEL, fetchUserStats, fetchUsers, setUserActive, setUserRole, type Permission, type UserRole } from "@/lib/data/users";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { errorMessage, useAsync } from "@/lib/useAsync";
 import CreateUserModal from "./CreateUserModal";
 import EditRolesDrawer from "./EditRolesDrawer";
@@ -22,7 +23,8 @@ export default function UsersView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [actionError, setActionError] = useState("");
-  const list = useAsync(() => fetchUsers(page), [page]);
+  const q = useSearchQuery();
+  const list = useAsync(() => fetchUsers(page, q), [page, q]);
   const stats = useAsync(fetchUserStats, []);
   const users = list.data?.rows ?? [];
   const total = list.data?.total ?? 0;

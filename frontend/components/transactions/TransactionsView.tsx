@@ -6,6 +6,7 @@ import LoadError from "@/components/ui/LoadError";
 import PageHeader from "@/components/ui/PageHeader";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
 import { fetchMedicineOptions, fetchTimeline, fetchTransactions, recordTransaction, type TxType } from "@/lib/data/transactions";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { useAsync } from "@/lib/useAsync";
 import ActivityTable from "./ActivityTable";
 import LiveTimeline from "./LiveTimeline";
@@ -27,7 +28,8 @@ export default function TransactionsView() {
   const [filter, setFilter] = useState<Filter>("all");
   const [page, setPage] = useState(1);
   const [modal, setModal] = useState<"in" | "out" | null>(null);
-  const list = useAsync(() => fetchTransactions(filter, page), [filter, page]);
+  const q = useSearchQuery();
+  const list = useAsync(() => fetchTransactions(filter, page, q), [filter, page, q]);
   const timeline = useAsync(fetchTimeline, []);
   const medicines = useAsync(() => (modal ? fetchMedicineOptions() : Promise.resolve([])), [modal !== null]);
 

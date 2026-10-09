@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { relativeTime } from "@/lib/format";
-import { must, mustAffect, pageRange } from "./query";
+import { must, mustAffect, pageRange, searchTerm } from "./query";
 
 export type UserRole = "administrator" | "pharmacist" | "manager" | "nurse" | "staff";
 export type Permission = "inventory_overrides" | "financial_reporting" | "user_auditing";
@@ -68,19 +68,37 @@ export async function updateOwnName(userId: string, fullName: string) {
   mustAffect(await supabase.from("profiles").update({ full_name: fullName }).eq("id", userId).select("id"));
 }
 
+/**
+ * Gate for every sign-in path. A deactivated account is refused (and signed
+ * back out); an invited account that has never signed in is "pending" rather
+ * than deactivated, and is activated by touch_last_login on first sign-in.
+ */
+export async function enforceActiveAccount(): Promise<boolean> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return false;
+  const { data } = await supabase.from("profiles").select("is_active, last_login_at").eq("id", auth.user.id).maybeSingle();
+  const allowed = !!data && (data.is_active || data.last_login_at === null);
+  if (!allowed) await supabase.auth.signOut();
+  return allowed;
+}
+
+export const DEACTIVATED_MESSAGE = "This account has been deactivated. Contact your administrator.";
+
 /** Stamps last_login_at and writes the "User signed in" log line. */
 export async function recordSignIn() {
   await supabase.rpc("touch_last_login");
 }
 
 /** Profiles are RLS-scoped: administrators get everyone, others only themselves. */
-export async function fetchUsers(page: number): Promise<{ rows: UserRow[]; total: number }> {
+export async function fetchUsers(page: number, query = ""): Promise<{ rows: UserRow[]; total: number }> {
   const [from, to] = pageRange(page);
-  const { data, error, count } = await supabase
+  let q = supabase
     .from("profiles")
     .select("id, full_name, email, role, is_active, last_login_at, permissions", { count: "exact" })
-    .order("full_name")
-    .range(from, to);
+    .order("full_name");
+  const term = searchTerm(query);
+  if (term) q = q.or(["full_name", "email"].map((c) => `${c}.ilike.*${term}*`).join(","));
+  const { data, error, count } = await q.range(from, to);
   const rows = must({ data, error }) as ProfileRecord[];
   return {
     total: count ?? rows.length,
@@ -135,7 +153,13 @@ export async function inviteUser(input: { fullName: string; email: string; role:
   });
   if (error) {
     const body = await (error as { context?: Response }).context?.json?.().catch(() => null);
-    throw new Error(body?.error ?? "Could not send the invite. Try again.");
+    if (body?.error) throw new Error(body.error);
+    // No response body means the request never reached the function.
+    throw new Error(
+      error.name === "FunctionsHttpError"
+        ? "The invite service returned an error. Check the invite-user function logs in Supabase."
+        : "Could not reach the invite service. Make sure the invite-user Edge Function is deployed.",
+    );
   }
   return data as { id: string };
 }

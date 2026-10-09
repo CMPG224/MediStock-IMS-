@@ -8,7 +8,7 @@ import Badge from "@/components/ui/Badge";
 import { BTN_PRIMARY, BTN_SMALL_OUTLINE, CARD } from "@/components/ui/buttons";
 import Toggle from "@/components/ui/Toggle";
 import { initials } from "@/lib/format";
-import { ACCENTS, DEFAULT_SETTINGS, NOTIFICATION_ITEMS, fetchSettings, saveSetting, type SettingsState, type Theme } from "@/lib/data/settings";
+import { ACCENTS, DEFAULT_SETTINGS, applyAppearance, NOTIFICATION_ITEMS, fetchSettings, saveSetting, type SettingsState, type Theme } from "@/lib/data/settings";
 import { ROLE_TITLE, updateOwnName, type Profile } from "@/lib/data/users";
 import { supabase } from "@/lib/supabase";
 import { errorMessage, useAsync } from "@/lib/useAsync";
@@ -40,10 +40,12 @@ function SettingsForm({ profile, reloadProfile }: { profile: Profile; reloadProf
   const update = async <K extends keyof SettingsState>(key: K, value: SettingsState[K]) => {
     setOverrides((o) => ({ ...o, [key]: value }));
     setPrefError("");
+    if (key === "theme" || key === "accent") applyAppearance({ ...settings, [key]: value });
     try {
       await saveSetting(profile.id, key, value);
     } catch (e) {
       setOverrides((o) => ({ ...o, [key]: settings[key] }));
+      if (key === "theme" || key === "accent") applyAppearance(settings);
       setPrefError(errorMessage(e));
     }
   };
@@ -191,7 +193,6 @@ function SettingsForm({ profile, reloadProfile }: { profile: Profile; reloadProf
               })}
             </div>
           </div>
-          <p className="mt-5 text-[12px] text-muted">Theme and accent are saved but not applied yet.</p>
         </section>
       </div>
     </div>

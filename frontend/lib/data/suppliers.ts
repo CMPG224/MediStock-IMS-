@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { isoDay } from "@/lib/format";
-import { must, pageRange } from "./query";
+import { must, pageRange, searchTerm } from "./query";
 
 export type SupplierStatus = "Active" | "Inactive";
 export type SupplierFilter = "All" | SupplierStatus;
@@ -45,10 +45,12 @@ type DirectoryRow = {
 
 const TIER_ORDER = ["primary", "secondary", "urgent"];
 
-export async function fetchSuppliers(filter: SupplierFilter, page: number): Promise<{ rows: Supplier[]; total: number }> {
+export async function fetchSuppliers(filter: SupplierFilter, page: number, query = ""): Promise<{ rows: Supplier[]; total: number }> {
   const [from, to] = pageRange(page);
   let q = supabase.from("supplier_directory").select("*", { count: "exact" }).order("name");
   if (filter !== "All") q = q.eq("status", filter.toLowerCase());
+  const term = searchTerm(query);
+  if (term) q = q.or(["name", "contact_name"].map((c) => `${c}.ilike.*${term}*`).join(","));
   const { data, error, count } = await q.range(from, to);
   const rows = must({ data, error }) as DirectoryRow[];
   return {

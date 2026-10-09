@@ -8,6 +8,7 @@ import { BTN_PRIMARY } from "@/components/ui/buttons";
 import { formatRand } from "@/lib/format";
 import { createOrder, fetchOrderStats, fetchOrders, setOrderStatus, type NewOrder, type PurchaseOrder } from "@/lib/data/orders";
 import { pageCount } from "@/lib/data/query";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { errorMessage, useAsync } from "@/lib/useAsync";
 import CreateOrderModal from "./CreateOrderModal";
 import OrderDetailModal from "./OrderDetailModal";
@@ -19,7 +20,8 @@ export default function OrdersView() {
   const [creating, setCreating] = useState(false);
   const [detail, setDetail] = useState<PurchaseOrder | null>(null);
   const [actionError, setActionError] = useState("");
-  const list = useAsync(() => fetchOrders(page), [page]);
+  const q = useSearchQuery();
+  const list = useAsync(() => fetchOrders(page, q), [page, q]);
   const stats = useAsync(fetchOrderStats, []);
 
   const orders = list.data?.rows ?? [];

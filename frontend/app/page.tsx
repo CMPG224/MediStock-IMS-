@@ -7,7 +7,7 @@ import AuthLayout from "@/components/AuthLayout";
 import TextField from "@/components/TextField";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
-import { recordSignIn } from "@/lib/data/users";
+import { DEACTIVATED_MESSAGE, enforceActiveAccount, recordSignIn } from "@/lib/data/users";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -29,6 +29,10 @@ export default function LoginPage() {
     if (signInError) {
       // Generic message: don't reveal which part was wrong.
       setError("Incorrect email or password.");
+      return;
+    }
+    if (!(await enforceActiveAccount())) {
+      setError(DEACTIVATED_MESSAGE);
       return;
     }
     await recordSignIn();

@@ -11,13 +11,15 @@ import Pagination from "@/components/ui/Pagination";
 import { initial } from "@/lib/format";
 import { LOG_CATEGORIES, fetchLogs, type LogEntry, type LogResult } from "@/lib/data/logs";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { useAsync } from "@/lib/useAsync";
 
 const RESULT_TONE: Record<LogResult, BadgeTone> = { Success: "success", Warning: "warning", Failed: "danger" };
 
 export default function LogsView() {
   const [category, setCategory] = useState<(typeof LOG_CATEGORIES)[number]>("All");
-  const [query, setQuery] = useState("");
+  const headerQuery = useSearchQuery();
+  const [query, setQuery] = useState(headerQuery);
   const [page, setPage] = useState(1);
   const search = useDeferredValue(query);
   const list = useAsync(() => fetchLogs(category, search, page), [category, search, page]);

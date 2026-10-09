@@ -5,7 +5,7 @@
   --foreground: #171717;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -45,6 +45,30 @@
   --text-2xl:              27px;
   --text-2xl--line-height: 1.2;
 }
+
+/* Dark theme: re-point the tokens, and the white/off-white surfaces that are
+   written as literals across the components. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0B1220;
+  --foreground: #E6EBF3;
+  --color-ink: #E6EBF3;
+  --color-body: #B7C2D3;
+  --color-muted: #93A1B5;
+  --color-muted-strong: #A5B2C4;
+  --color-label: #A5B2C4;
+  --color-page: #0B1220;
+  --color-border: #2A3547;
+  --color-border-soft: #232E40;
+  --color-brand-tint: #1A2740;
+  --color-danger-bg: #3A1B19;
+  --color-warning-bg: #3A2D12;
+  --color-success-bg: #12301F;
+}
+:root[data-theme="dark"] .bg-white { background-color: #131C2E; }
+:root[data-theme="dark"] .bg-\[\#FBFCFE\],
+:root[data-theme="dark"] .bg-\[\#F3F6FB\],
+:root[data-theme="dark"] .bg-\[\#F1F4F9\] { background-color: #19243A; }
 
 @layer base {
   body {

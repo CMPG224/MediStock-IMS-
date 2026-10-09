@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { clock, isoDay } from "@/lib/format";
-import { must, pageRange } from "./query";
+import { must, pageRange, searchTerm } from "./query";
 
 export type TxType = "in" | "out" | "damaged" | "return" | "expired";
 export type TxStatus = "COMPLETED" | "PENDING" | "REJECTED";
@@ -74,10 +74,12 @@ function toTransaction(r: FeedRow): Transaction {
 
 const COLUMNS = "id, reference, type, quantity, status, medicine_name, batch_number, department, note, performed_by, performed_by_name, created_at";
 
-export async function fetchTransactions(filter: "all" | TxType, page: number): Promise<{ rows: Transaction[]; total: number }> {
+export async function fetchTransactions(filter: "all" | TxType, page: number, query = ""): Promise<{ rows: Transaction[]; total: number }> {
   const [from, to] = pageRange(page);
   let q = supabase.from("transaction_feed").select(COLUMNS, { count: "exact" }).order("created_at", { ascending: false });
   if (filter !== "all") q = q.eq("type", DB_TYPE[filter]);
+  const term = searchTerm(query);
+  if (term) q = q.or(["reference", "medicine_name", "batch_number"].map((c) => `${c}.ilike.*${term}*`).join(","));
   const { data, error, count } = await q.range(from, to);
   const rows = must({ data, error }) as FeedRow[];
   return { rows: rows.map(toTransaction), total: count ?? rows.length };

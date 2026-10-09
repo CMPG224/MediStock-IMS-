@@ -13,6 +13,7 @@ import { BTN_PRIMARY, CARD, TD, TH } from "@/components/ui/buttons";
 import { formatDate } from "@/lib/format";
 import { PAGE_SIZE, pageCount } from "@/lib/data/query";
 import { fetchFeaturedSuppliers, fetchSuppliers } from "@/lib/data/suppliers";
+import { useSearchQuery } from "@/lib/useSearchQuery";
 import { useAsync } from "@/lib/useAsync";
 import AddSupplierModal from "./AddSupplierModal";
 import FeaturedSupplierCard from "./FeaturedSupplierCard";
@@ -24,7 +25,8 @@ export default function SuppliersView() {
   const [filter, setFilter] = useState<Filter>("All");
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
-  const list = useAsync(() => fetchSuppliers(filter, page), [filter, page]);
+  const q = useSearchQuery();
+  const list = useAsync(() => fetchSuppliers(filter, page, q), [filter, page, q]);
   const featured = useAsync(fetchFeaturedSuppliers, []);
 
   const rows = list.data?.rows ?? [];

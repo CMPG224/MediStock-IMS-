@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { isoDay } from "@/lib/format";
-import { must, mustAffect, pageRange } from "./query";
+import { must, mustAffect, pageRange, searchTerm } from "./query";
 
 export type PoStatus = "pending" | "approved" | "delayed" | "delivered" | "cancelled";
 export type PoPriority = "Normal" | "High" | "Critical";
@@ -39,16 +39,18 @@ type OrderRow = {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export async function fetchOrders(page: number): Promise<{ rows: PurchaseOrder[]; total: number }> {
+export async function fetchOrders(page: number, query = ""): Promise<{ rows: PurchaseOrder[]; total: number }> {
   const [from, to] = pageRange(page);
-  const { data, error, count } = await supabase
+  const term = searchTerm(query.replace(/^#/, ""));
+  let q = supabase
     .from("purchase_orders")
     .select(
       "id, po_number, supplier_id, status, priority, created_at, expected_date, total_amount, suppliers(name), purchase_order_items(medicine_id, quantity, unit_cost, medicines(name))",
       { count: "exact" },
     )
-    .order("created_at", { ascending: false })
-    .range(from, to);
+    .order("created_at", { ascending: false });
+  if (term) q = q.ilike("po_number", `%${term}%`);
+  const { data, error, count } = await q.range(from, to);
   const rows = must({ data, error }) as unknown as OrderRow[];
   return {
     total: count ?? rows.length,
