@@ -1,12 +1,12 @@
 import Header from "@/components/app-shell/Header";
 import Icon from "@/components/Icon";
+import ExportPdfButton from "@/components/reports/ExportPdfButton";
 import AvailableReports from "@/components/reports/AvailableReports";
 import InventoryValue from "@/components/reports/InventoryValue";
 import MonthlyExpenditure from "@/components/reports/MonthlyExpenditure";
 import StockTurnover from "@/components/reports/StockTurnover";
 import SupplierPerformance from "@/components/reports/SupplierPerformance";
 import AppFooter from "@/components/ui/AppFooter";
-import { BTN_PRIMARY } from "@/components/ui/buttons";
 import PageHeader from "@/components/ui/PageHeader";
 
 export default function ReportsPage() {
@@ -27,10 +27,7 @@ export default function ReportsPage() {
                 Jun 1 - Jun 31, 2026
                 <Icon name="expand_more" size={16} />
               </button>
-              <button type="button" className={BTN_PRIMARY}>
-                <Icon name="download" size={17} />
-                Export PDF
-              </button>
+              <ExportPdfButton />
             </>
           }
         />
