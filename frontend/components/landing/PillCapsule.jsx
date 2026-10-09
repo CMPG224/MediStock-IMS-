@@ -27,52 +27,40 @@ export const PILL_COUNT = 38; // loose pills filling the container
 
 const COPY = [
   {
-    tag: "01 — Intake",
+    tag: "Intake",
     a: "One unit.",
     b: "Every one accounted for.",
     body: "Stock enters sealed, serialised and batch-stamped. From the moment it is scanned in, MediStock knows what it is, where it came from and when it expires.",
   },
   {
-    tag: "02 — Breakdown",
+    tag: "Breakdown",
     a: "One pack.",
     b: "Everything inside it.",
-    body: "Cases break to packs, packs break to units. Composition, batch and expiry are carried down every level of the hierarchy — nothing is inferred.",
+    body: "Cases break to packs, packs break to units. Composition, batch and expiry are carried down every level of the hierarchy - nothing is inferred.",
   },
   {
-    tag: "03 — Visibility",
+    tag: "Visibility",
     a: "One catalogue.",
     b: "Every line in orbit.",
     body: "On hand, in transit, quarantined, expiring. Thousands of lines across every site resolve into a single live position you can act on.",
   },
   {
-    tag: "04 — Reconciliation",
+    tag: "Reconciliation",
     a: "It closes.",
     b: "Nothing unaccounted for.",
     body: "Counts reconcile against movements. Every adjustment is reversible and written to an audit trail with a user, a reason and a timestamp.",
   },
   {
-    tag: "05 — Dispatch",
+    tag: "Dispatch",
     a: "One unit.",
     b: "Now one of thirty-nine.",
     body: "Picked, packed, labelled and released. The unit leaves as traceable inventory, and the count on the shelf updates before the door closes.",
   },
   {
-    tag: "06 — Transit",
+    tag: "Transit",
     a: "It leaves.",
     b: "It stays visible.",
-    body: "Cased, sealed and manifested. In transit is a state MediStock holds a position for — not a gap between the last scan and the next one.",
-  },
-  {
-    tag: "07 — Shelf",
-    a: "It arrives.",
-    b: "It joins the count.",
-    body: "Received, checked and shelved. The dispensary's position updates the moment it lands, not at the next stock take.",
-  },
-  {
-    tag: "08 — Patient",
-    a: "It opens.",
-    b: "For the person it was for.",
-    body: "The lid turns, one capsule leaves the bottle, and the count drops by one. Every scan, batch and reconciliation upstream existed for this.",
+    body: "Cased, sealed and manifested. In transit is a state MediStock holds a position for - not a gap between the last scan and the next one.",
   },
 ];
 
@@ -91,10 +79,10 @@ function bottleRadiusAt(y) {
 // sits on this point so its unscrew orbit shares the bottle's axis.
 const HELD = { x: 0, y: 0.25, z: 2.2 };
 
-// Every keyframe either hand hits, in one place — these are the values worth
+// Every keyframe either hand hits, in one place - these are the values worth
 // nudging first once you can see them on screen.
 const HAND = {
-  // HOLD — left hand, a child of the bottle so it tracks every move and the tip.
+  // HOLD - left hand, a child of the bottle so it tracks every move and the tip.
   // Rolled a quarter turn so the palm faces the bottle and the curl axis is
   // vertical, letting the fingers wrap the body. Sat behind and left of the
   // bottle: the body then hides the palm and the forearm runs away from the
@@ -103,7 +91,7 @@ const HAND = {
   holdPark: { x: -1.95, y: -40, z: -2.4 },
   holdCurl: 1.15, // ceiling for the solver; contact decides where it stops
 
-  // OPEN — right hand, gripping the cap from above and behind. The hand is
+  // OPEN - right hand, gripping the cap from above and behind. The hand is
   // longer than the cap is wide, so the palm sits behind it and the fingers
   // reach forward before curling down onto the knurl.
   openPark: { x: 9.5, y: 4.2, z: -2.1, rx: 0.1, ry: -0.22, rz: 0.12 },
@@ -197,7 +185,6 @@ export default function PillCapsuleScroll() {
   const pinRef = useRef(null); // pinned viewport
   const panelsRef = useRef([]);
   const progressRef = useRef(null);
-  const cueRef = useRef(null);
   const stateRef = useRef({});
   // Fixed finish: Cobalt at 26% gloss.
   const paletteIdx = DEFAULT_PALETTE;
@@ -225,7 +212,7 @@ export default function PillCapsuleScroll() {
     renderer.toneMappingExposure = 0.82;
     mount.appendChild(renderer.domElement);
 
-    // image-based lighting — this is what makes the clearcoat read as real plastic
+    // image-based lighting - this is what makes the clearcoat read as real plastic
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
@@ -384,7 +371,7 @@ export default function PillCapsuleScroll() {
     const seam = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.014, 10, radialSeg), seamMat);
     seam.rotation.x = Math.PI / 2;
 
-    // the shell as one rigid body — act 5 shrinks and drops this whole group into the container
+    // the shell as one rigid body - act 5 shrinks and drops this whole group into the container
     const shellGroup = new THREE.Group();
     shellGroup.add(topPart, botPart, seam);
     shellGroup.traverse((o) => {
@@ -423,13 +410,13 @@ export default function PillCapsuleScroll() {
       const r = 0.15 + Math.random() * 0.25;
       g.position.set(Math.cos(a) * r, (Math.random() - 0.5) * 1.6, Math.sin(a) * r);
 
-      // act 2 — burst outward
+      // act 2 - burst outward
       const scatter = {
         x: g.position.x * (3.4 + Math.random() * 2),
         y: g.position.y * (2.2 + Math.random() * 1.6) + (Math.random() - 0.5) * 1.6,
         z: g.position.z * (3.4 + Math.random() * 2),
       };
-      // act 3 — settle onto a ring around the core
+      // act 3 - settle onto a ring around the core
       const ang = (i / GRANULE_COUNT) * Math.PI * 2 + Math.random() * 0.12;
       const rr = 2.15 + (Math.random() - 0.5) * 0.3;
       const halo = { x: Math.cos(ang) * rr, y: (Math.random() - 0.5) * 0.34, z: Math.sin(ang) * rr };
@@ -466,7 +453,7 @@ export default function PillCapsuleScroll() {
     const bodyR = 1.25;
     const neckR = 0.72;
 
-    // tinted wall — plain transparency rather than transmission, so there is no
+    // tinted wall - plain transparency rather than transmission, so there is no
     // extra render target per frame and the pills inside stay legible
     const jarMat = new THREE.MeshPhysicalMaterial({
       color: P.jar,
@@ -498,7 +485,7 @@ export default function PillCapsuleScroll() {
     jarNeck.position.y = 1.55;
     bottleGroup.add(jarBody, jarBase, jarShoulder, jarNeck);
 
-    // screw thread on the neck — this is what makes the lid's rotation read as real
+    // screw thread on the neck - this is what makes the lid's rotation read as real
     const threadGeo = new THREE.TorusGeometry(neckR, 0.03, 8, 48);
     for (let i = 0; i < 3; i++) {
       const th = new THREE.Mesh(threadGeo, jarMat);
@@ -600,7 +587,7 @@ export default function PillCapsuleScroll() {
     lidTop.rotation.x = -Math.PI / 2;
     lidTop.position.y = lidH / 2;
     lidGroup.add(lidSide, lidTop);
-    // knurled grip — 44 ribs sharing one geometry, so the spin is legible
+    // knurled grip - 44 ribs sharing one geometry, so the spin is legible
     const knurlGeo = new THREE.BoxGeometry(0.05, lidH * 0.88, 0.055);
     for (let i = 0; i < 44; i++) {
       const a = (i / 44) * Math.PI * 2;
@@ -817,7 +804,7 @@ export default function PillCapsuleScroll() {
         pinSpacing: false,
       });
 
-      // one master timeline scrubbed to scroll, laid out on a 0..3 clock — one unit per act
+      // one master timeline scrubbed to scroll, laid out on a 0..3 clock - one unit per act
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -826,7 +813,7 @@ export default function PillCapsuleScroll() {
           scrub: 0.7,
           onUpdate: (self) => {
             setProgress(self.progress);
-            s.locked = self.progress > 0.33; // act 5 onward, the timeline owns the capsule
+            s.locked = self.progress > 0.53; // act 5 onward, the timeline owns the capsule
           },
         },
       });
@@ -836,13 +823,13 @@ export default function PillCapsuleScroll() {
       // continuous rotation across the whole scroll
       tl.to(s.outerGroup.rotation, { y: Math.PI * 2.1, ease: "none", duration: 3 }, 0);
       tl.to(s.outerGroup.rotation, { y: Math.PI * 2.75, ease: "none", duration: 3.2 }, 3);
-      tl.to(s.outerGroup.rotation, { y: Math.PI * 4, ease: "power1.inOut", duration: 2.4 }, 6.2);
+      tl.to(s.outerGroup.rotation, { y: Math.PI * 4, ease: "power1.inOut", duration: 1.7 }, 6.2);
       tl.to(s.outerGroup.rotation, { x: 0.04, ease: "power2.inOut", duration: 1.4 }, 6.2);
 
-      // ACT 1 — push in on the sealed capsule
+      // ACT 1 - push in on the sealed capsule
       tl.to(s.camBase, { z: 5.3, duration: 1, ease: "power1.inOut" }, 0);
 
-      // ACT 2 — the seam flares, the shell parts, the granules burst
+      // ACT 2 - the seam flares, the shell parts, the granules burst
       tl.to(s.seamMat, { emissiveIntensity: 4.5, duration: 0.22, ease: "power2.in" }, 0.9);
       tl.to(s.waveMat, { opacity: 0.5, duration: 0.15 }, 1.0);
       tl.to(s.wave.scale, { x: 8, y: 8, z: 8, duration: 0.9, ease: "power2.out" }, 1.0);
@@ -858,7 +845,7 @@ export default function PillCapsuleScroll() {
       });
       tl.to(s.camBase, { z: 8.6, duration: 1, ease: "power1.inOut" }, 1.6);
 
-      // ACT 3 — shells tumble away and dissolve, granules gather into an orbit
+      // ACT 3 - shells tumble away and dissolve, granules gather into an orbit
       tl.to(s.topPart.position, { y: 4.2, duration: 1, ease: "power2.in" }, 2);
       tl.to(s.botPart.position, { y: -4.2, duration: 1, ease: "power2.in" }, 2);
       tl.to(s.topPart.rotation, { x: 1.1, z: 0.8, duration: 1, ease: "power1.inOut" }, 2);
@@ -880,7 +867,7 @@ export default function PillCapsuleScroll() {
       tl.to(s.outerGroup.rotation, { x: 0.42, duration: 1, ease: "power2.inOut" }, 2);
       tl.to(s.camBase, { z: 9.4, y: 0.9, duration: 1, ease: "power1.inOut" }, 2.1);
 
-      // ACT 4 — everything runs back: the capsule reseals
+      // ACT 4 - everything runs back: the capsule reseals
       tl.to(s.bloom, { strength: 0.34, duration: 0.8, ease: "power2.inOut" }, 3);
       tl.to(s.granuleMat, { emissiveIntensity: 0.28, duration: 0.7 }, 3);
       tl.to(s.coreGroup.scale, { x: 0.001, y: 0.001, z: 0.001, duration: 0.5, ease: "power2.in" }, 3);
@@ -906,7 +893,7 @@ export default function PillCapsuleScroll() {
       tl.to(s.seamMat, { emissiveIntensity: 3.2, duration: 0.14 }, 4.05);
       tl.to(s.seamMat, { emissiveIntensity: 0, duration: 0.45 }, 4.19);
 
-      // ACT 5 — the container arrives and the capsule is packed
+      // ACT 5 - the container arrives and the capsule is packed
       tl.to(s.bottleGroup.position, { y: 0, duration: 1, ease: "power2.out" }, 4.3);
       tl.to(s.camBase, { z: 11.6, y: 0.05, duration: 1.2, ease: "power1.inOut" }, 4.3);
       tl.to(s.ground.position, { y: -2.2, duration: 1, ease: "power2.out" }, 4.3);
@@ -921,12 +908,12 @@ export default function PillCapsuleScroll() {
       tl.to(s.shellGroup.position, { y: 0.38, duration: 0.75, ease: "power2.in" }, 4.95);
       tl.to(s.shellGroup.rotation, { x: 0.85, z: 1.3, duration: 0.85, ease: "power1.out" }, 5);
 
-      // lid comes down and screws on — three full turns, then a quarter to seat it
+      // lid comes down and screws on - three full turns, then a quarter to seat it
       tl.to(s.lidGroup.position, { y: 1.62, duration: 0.55, ease: "power2.inOut" }, 5.5);
       tl.to(s.lidGroup.rotation, { y: Math.PI * 6, duration: 0.55, ease: "none" }, 5.5);
       tl.to(s.lidGroup.rotation, { y: Math.PI * 6.5, duration: 0.15, ease: "back.out(2.4)" }, 6.05);
 
-      // ACT 6 — cased and shipped
+      // ACT 6 - cased and shipped
       tl.to(s.bottleGroup.position, { y: 3.4, duration: 0.5, ease: "power2.inOut" }, 6.2);
       tl.to(s.shellGroup.position, { y: 3.78, duration: 0.5, ease: "power2.inOut" }, 6.2);
       tl.to(s.carton.group.position, { y: 0, duration: 0.6, ease: "power2.out" }, 6.25);
@@ -943,87 +930,24 @@ export default function PillCapsuleScroll() {
       tl.to(s.carton.flaps.flapF.rotation, { x: 0, duration: 0.3, ease: "power2.inOut" }, 7.35);
       tl.to(s.carton.flaps.flapB.rotation, { x: 0, duration: 0.3, ease: "power2.inOut" }, 7.35);
 
-      // in transit — streaks rush past a case that is now sealed
+      // in transit - streaks rush past a case that is now sealed
       tl.to(s.streaks.mat, { opacity: 0.5, duration: 0.2 }, 7.35);
       tl.to(s.streaks.mesh.position, { z: -16, duration: 0.55, ease: "none" }, 7.35);
       tl.to(s.streaks.mat, { opacity: 0, duration: 0.2 }, 7.7);
 
-      // ACT 7 — received, unpacked and shelved
-      tl.to(s.carton.flaps.flapF.rotation, { x: Math.PI / 2, duration: 0.26, ease: "power2.inOut" }, 7.85);
-      tl.to(s.carton.flaps.flapB.rotation, { x: -Math.PI / 2, duration: 0.26, ease: "power2.inOut" }, 7.85);
-      tl.to(s.carton.flaps.flapL.rotation, { z: Math.PI / 2, duration: 0.26, ease: "power2.inOut" }, 8.0);
-      tl.to(s.carton.flaps.flapR.rotation, { z: -Math.PI / 2, duration: 0.26, ease: "power2.inOut" }, 8.0);
-
-      tl.to(s.shelf.group.position, { y: 0, duration: 0.7, ease: "power2.out" }, 8.15);
-      tl.to(s.carton.group.position, { y: -34, duration: 0.6, ease: "power2.in" }, 8.3);
-
-      // the bottle settles into the empty slot in the row
-      tl.to(s.bottleGroup.position, { y: -0.06, duration: 0.6, ease: "power2.out" }, 8.4);
-      tl.to(s.shellGroup.position, { y: 0.32, duration: 0.6, ease: "power2.out" }, 8.4);
-
-      // pan along the shelf, then settle on ours
-      tl.to(s.camBase, { x: -5.2, tx: -5.2, duration: 0.45, ease: "power2.inOut" }, 8.15);
-      tl.to(s.camBase, { x: 0, tx: 0, duration: 0.75, ease: "power2.inOut" }, 8.6);
-      tl.to(s.camBase, { z: 12, y: 0.3, ty: 0, duration: 0.8, ease: "power1.inOut" }, 8.3);
-
-      // ACT 8 — one hand takes it off the shelf, the other opens it
-      tl.to(s.camBase, { z: 13.5, y: 0.6, tx: 0.1, ty: 0.5, duration: 0.7, ease: "power1.inOut" }, 9.2);
-
-      // the holding hand rises to the bottle and closes on the body
-      tl.to(s.handHold.group.position, { y: HAND.hold.y, duration: 0.55, ease: "power2.out" }, 9.7);
-      tl.to(s.handRig, { hold: 1, duration: 0.35, ease: "power2.inOut" }, 10.05);
-
-      // and pulls it clear of the row, toward the viewer
-      tl.to(s.bottleGroup.position, { x: HELD.x, y: HELD.y, z: HELD.z, duration: 0.8, ease: "power2.inOut" }, 10.35);
-      tl.to(s.shelf.group.position, { z: -4, duration: 0.8, ease: "power2.inOut" }, 10.35);
-      tl.to(s.camBase, { z: 14.2, ty: 0.35, duration: 0.8, ease: "power1.inOut" }, 10.35);
-
-      // the second hand arrives on the cap
-      tl.to(s.handPivot.position, { y: HELD.y, duration: 0.12, ease: "none" }, 10.85);
-      tl.to(s.handOpen.group.position, { x: HAND.onCap.x, y: HAND.onCap.y, z: HAND.onCap.z, duration: 0.5, ease: "power2.out" }, 10.95);
-      tl.to(s.handOpen.group.rotation, { x: HAND.onCap.rx, y: HAND.onCap.ry, z: HAND.onCap.rz, duration: 0.5, ease: "power2.out" }, 10.95);
-      tl.to(s.handRig, { open: 1, duration: 0.3, ease: "power2.inOut" }, 11.2);
-
-      // unscrew — the hand orbits the bottle axis and the lid turns with it
-      tl.to(s.handPivot.rotation, { y: -Math.PI * 5, duration: 0.7, ease: "power1.inOut" }, 11.45);
-      tl.to(s.handPivot.position, { y: HELD.y + HAND.lift, duration: 0.7, ease: "power1.in" }, 11.45);
-      tl.to(s.lidGroup.rotation, { y: Math.PI * 1.5, duration: 0.7, ease: "power1.inOut" }, 11.45);
-      tl.to(s.lidGroup.position, { y: 1.62 + HAND.lift, duration: 0.7, ease: "power1.in" }, 11.45);
-
-      // lid carried out of frame
-      tl.to(s.handOpen.group.position, { x: 8.5, y: 4.2, duration: 0.32, ease: "power2.in" }, 12.1);
-      tl.to(s.lidGroup.position, { x: 4.2, y: 5.6, duration: 0.32, ease: "power2.in" }, 12.1);
-
-      // the holding hand tips the bottle — parented to it, so it goes along
-      tl.to(s.bottleGroup.rotation, { z: -1.25, duration: 0.4, ease: "power2.inOut" }, 12.25);
-
-      // one capsule leaves through the neck
-      tl.to(s.shellGroup.position, { x: 2.2, y: 1.05, z: 3.4, duration: 0.3, ease: "power1.in" }, 12.4);
-      tl.to(s.shellGroup.rotation, { x: 1.4, z: -0.7, duration: 0.55, ease: "power1.out" }, 12.4);
-
-      // the opening hand comes back under, palm up, and catches it
-      tl.to(s.handPivot.rotation, { y: 0, duration: 0.01, ease: "none" }, 12.48);
-      tl.to(s.handPivot.position, { y: HELD.y, duration: 0.01, ease: "none" }, 12.48);
-      tl.to(s.handOpen.group.position, { x: HAND.catch.x, y: HAND.catch.y, z: HAND.catch.z, duration: 0.3, ease: "power2.out" }, 12.5);
-      tl.to(s.handOpen.group.rotation, { x: HAND.catch.rx, y: HAND.catch.ry, z: HAND.catch.rz, duration: 0.3, ease: "power2.out" }, 12.5);
-      tl.to(s.handRig, { open: 0.2, duration: 0.25, ease: "power2.out" }, 12.5);
-
-      tl.to(s.camBase, { z: 14.4, y: -0.2, tx: 1.0, ty: -0.9, duration: 0.6, ease: "power1.inOut" }, 12.35);
-      tl.to(s.shellGroup.position, { y: -2.1, duration: 0.4, ease: "power2.in" }, 12.65);
-      tl.to(s.handRig, { open: 0.32, duration: 0.2, ease: "power2.out" }, 13.0);
+      // hold on the sealed case for a beat before the page continues
+      tl.to({}, { duration: 0.3 }, 7.9);
 
       // ----- copy panels, cross-faded against the acts -----
-      // timeline runs 0..13.2; act boundaries land at roughly
-      // 8 / 15 / 23 / 33 / 47 / 59 / 70 / 100 percent of the scroll
+      // timeline runs 0..8.2; act boundaries land at roughly
+      // 13 / 24 / 37 / 53 / 75 / 100 percent of the scroll
       const marks = [
-        { in: null, out: ["3.5% top", "6.5% top"] },
-        { in: ["8.5% top", "11.5% top"], out: ["13% top", "15% top"] },
-        { in: ["17% top", "19.5% top"], out: ["21% top", "23% top"] },
-        { in: ["25% top", "28.5% top"], out: ["30.5% top", "32.5% top"] },
-        { in: ["35.5% top", "39% top"], out: ["44% top", "46.5% top"] },
-        { in: ["49.5% top", "53% top"], out: ["56.5% top", "58.5% top"] },
-        { in: ["61.5% top", "65% top"], out: ["67.5% top", "69.5% top"] },
-        { in: ["72% top", "76% top"], out: null },
+        { in: null, out: ["5.6% top", "10.5% top"] },
+        { in: ["13.7% top", "18.5% top"], out: ["20.9% top", "24.1% top"] },
+        { in: ["27.4% top", "31.4% top"], out: ["33.8% top", "37% top"] },
+        { in: ["40.2% top", "45.9% top"], out: ["49.1% top", "52.3% top"] },
+        { in: ["57.1% top", "62.8% top"], out: ["70.8% top", "74.9% top"] },
+        { in: ["79.7% top", "85.3% top"], out: null },
       ];
       panels.forEach((el, i) => {
         const m = marks[i];
@@ -1047,11 +971,6 @@ export default function PillCapsuleScroll() {
             scrollTrigger: { trigger: containerRef.current, start: m.out[0], end: m.out[1], scrub: true },
           });
         }
-      });
-
-      gsap.to(cueRef.current, {
-        opacity: 0,
-        scrollTrigger: { trigger: containerRef.current, start: "1% top", end: "8% top", scrub: true },
       });
     });
 
@@ -1105,7 +1024,7 @@ export default function PillCapsuleScroll() {
 
   return (
     <div style={{ "--accent": palette.hud }}>
-      <div ref={containerRef} className="stage" style={{ height: "1580vh" }}>
+      <div ref={containerRef} className="stage" style={{ height: "980vh" }}>
         <div ref={pinRef} className="pin">
           <div ref={mountRef} className="canvas-mount" />
 
@@ -1127,10 +1046,6 @@ export default function PillCapsuleScroll() {
             ))}
           </div>
 
-          <div ref={cueRef} className="cue">
-            Scroll
-            <span />
-          </div>
         </div>
       </div>
     </div>

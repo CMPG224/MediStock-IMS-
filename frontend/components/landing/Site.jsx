@@ -12,7 +12,7 @@ const PillCapsule = dynamic(() => import("./PillCapsule"), { ssr: false });
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Placeholder figures for a demonstration build — swap for measured numbers before use.
+// Placeholder figures for a demonstration build, swap for measured numbers before use.
 const STATS = [
   { n: "99.98%", l: "Inventory accuracy across tracked sites" },
   { n: "4.2M", l: "Units under management at any moment" },
@@ -35,7 +35,7 @@ const PLATFORM = [
   },
   {
     h: "Cold chain",
-    p: "Continuous temperature logging against each consignment, with excursion alerts and a permanent record attached to the batch — not to a spreadsheet somebody has to remember to file.",
+    p: "Continuous temperature logging against each consignment, with excursion alerts and a permanent record attached to the batch, not to a spreadsheet somebody has to remember to file.",
   },
   {
     h: "Automated replenishment",
@@ -115,7 +115,7 @@ const STANDARDS = [
 const FAQ = [
   {
     q: "What does MediStock actually track?",
-    a: "Stock at unit, pack, case and pallet level, each carrying its own batch, expiry, supplier and location. Movements between those levels — receiving, splitting, transferring, dispensing, returning, writing off — are all recorded as entries against the same ledger, so a position at any moment is the sum of its movements rather than a number somebody typed in.",
+    a: "Stock at unit, pack, case and pallet level, each carrying its own batch, expiry, supplier and location. Movements between those levels, receiving, splitting, transferring, dispensing, returning, writing off, are all recorded as entries against the same ledger, so a position at any moment is the sum of its movements rather than a number somebody typed in.",
   },
   {
     q: "How does a recall work in practice?",
@@ -139,7 +139,7 @@ const FAQ = [
   },
   {
     q: "Who can change stock figures?",
-    a: "Access is role-based and adjustments require a reason code. Nothing is ever deleted — a correction is written as a reversing entry against the original, so the history of what was believed and when remains readable after the fact.",
+    a: "Access is role-based and adjustments require a reason code. Nothing is ever deleted, a correction is written as a reversing entry against the original, so the history of what was believed and when remains readable after the fact.",
   },
   {
     q: "Is it certified?",
@@ -351,7 +351,7 @@ export default function Site() {
           </p>
           <div className="cta-row" data-reveal>
             <Link className="btn btn--solid" href="/login">
-              Sign in to MediStock <span className="arrow">→</span>
+              Sign in <span className="arrow">→</span>
             </Link>
             <a className="btn btn--ghost" href="#platform">
               See the platform
@@ -418,7 +418,7 @@ export default function Site() {
           </div>
 
           <div className="footer-bottom">
-            <span>MediStock (IMS) — demonstration build, not a certified medical or regulatory system.</span>
+            <span>MediStock (IMS), demonstration build, not a certified medical or regulatory system.</span>
             <span className="mono">
               <Link href="/legal/privacy">Privacy</Link> · <Link href="/legal/terms">Terms</Link> ·{" "}
               <Link href="/legal/support">Support</Link>
