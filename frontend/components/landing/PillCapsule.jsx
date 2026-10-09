@@ -13,6 +13,13 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { makeCarton, makeStreaks, makeShelf, makeHand, applyHandPose, solveGrip } from "./props";
 
 gsap.registerPlugin(ScrollTrigger);
+// The mobile address bar resizing the viewport must not re-layout the pinned scene mid-scroll.
+ScrollTrigger.config({ ignoreMobileResize: true });
+
+// Portrait screens see far less width at the same distance, so pull the camera back.
+const zoomFor = (aspect) => (aspect >= 1.3 ? 1 : Math.min(1.9, 1 + (1.3 - aspect) * 1.2));
+// ...and lift the scene so it sits above the copy that takes the bottom of a phone screen.
+const isPortrait = (aspect) => aspect < 0.9;
 
 // each palette drives the shell, the seam, the granules, the backdrop and the HUD accent
 const PALETTES = [
@@ -205,8 +212,19 @@ export default function PillCapsuleScroll() {
     const lookAt = new THREE.Vector3(0, 0, 0);
     camera.position.set(camBase.x, camBase.y, camBase.z);
 
+    // aspect, portrait framing and the camera distance multiplier, kept in one place
+    const view = { zoom: zoomFor(width / height) };
+    const applyViewport = (w, h) => {
+      camera.aspect = w / h;
+      view.zoom = zoomFor(camera.aspect);
+      if (isPortrait(camera.aspect)) camera.setViewOffset(w, h, 0, h * 0.16, w, h);
+      else camera.clearViewOffset();
+      camera.updateProjectionMatrix();
+    };
+    applyViewport(width, height);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, width < 768 ? 1.5 : 1.75));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.82;
@@ -659,7 +677,7 @@ export default function PillCapsuleScroll() {
 
     // ----- post-processing -----
     const composer = new EffectComposer(renderer);
-    composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, width < 768 ? 1.5 : 1.75));
     composer.setSize(width, height);
     composer.addPass(new RenderPass(scene, camera));
     const bloom = new UnrealBloomPass(new THREE.Vector2(width, height), 0.34, 0.8, 0.88);
@@ -674,6 +692,7 @@ export default function PillCapsuleScroll() {
       handRig: { open: 0, hold: 1 },
       granuleGroup, granules, granuleMat, coreGroup, coreMat, haloMat,
       matA, matB, backdropMat, dustMat, groundMat,
+      get zoom() { return view.zoom; },
       dragging: false, locked: false, prevX: 0, prevY: 0, velX: 0, velY: 0,
       pointerX: 0, pointerY: 0,
     };
@@ -702,6 +721,7 @@ export default function PillCapsuleScroll() {
       const dy = p.clientY - S.prevY;
       S.prevX = p.clientX;
       S.prevY = p.clientY;
+      if (e.touches && Math.abs(dy) > Math.abs(dx)) return;
       S.velX = dx * 0.008;
       S.velY = dy * 0.008;
       capsuleGroup.rotation.y += S.velX;
@@ -742,7 +762,7 @@ export default function PillCapsuleScroll() {
       // pointer parallax layered on top of the scroll-driven camera dolly
       camera.position.x += (camBase.x + S.pointerX * 0.55 - camera.position.x) * 0.045;
       camera.position.y += (camBase.y - S.pointerY * 0.35 - camera.position.y) * 0.045;
-      camera.position.z += (camBase.z - camera.position.z) * 0.12;
+      camera.position.z += (camBase.z * S.zoom - camera.position.z) * 0.12;
       lookAt.x += (camBase.tx - lookAt.x) * 0.08;
       lookAt.y += (camBase.ty - lookAt.y) * 0.08;
       lookAt.z += (camBase.tz - lookAt.z) * 0.08;
@@ -759,8 +779,7 @@ export default function PillCapsuleScroll() {
     const onResize = () => {
       const w = mount.clientWidth;
       const h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+      applyViewport(w, h);
       renderer.setSize(w, h);
       composer.setSize(w, h);
       ScrollTrigger.refresh();
